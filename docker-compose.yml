@@ -1,0 +1,96 @@
+services:
+  postgres:
+    image: postgres:13
+    container_name: sportpredict_postgres
+    environment:
+      POSTGRES_DB: sportpredict
+      POSTGRES_USER: sportpredict_user
+      POSTGRES_PASSWORD: DiosBendito
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sportpredict_user -d sportpredict"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: sportpredict_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  mongodb:
+    image: mongo:6
+    container_name: sportpredict_mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: PadreHijoEspiritu_Santo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  neo4j:
+    image: neo4j:5-community
+    container_name: sportpredict_neo4j
+    environment:
+      NEO4J_AUTH: neo4j/sportpredict_neo4j_pass
+      NEO4J_PLUGINS: '["apoc"]'
+    ports:
+      - "7474:7474"  # HTTP
+      - "7687:7687"  # Bolt
+    volumes:
+      - neo4j_data:/data
+      - neo4j_logs:/logs
+    healthcheck:
+      test: ["CMD", "cypher-shell", "-u", "neo4j", "-p", "sportpredict_neo4j_pass", "RETURN 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+
+  web:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: sportpredict_web
+    ports:
+      - "8000:8000"
+    environment:
+      - POSTGRES_NAME=sportpredict
+      - POSTGRES_USER=sportpredict_user
+      - POSTGRES_PASSWORD=DiosBendito
+    # Agrega un volumen para desarrollo (descomenta si necesitas desarrollo activo)
+    # volumes:
+    #   - ./backend:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+      neo4j:
+        condition: service_healthy
+
+volumes:
+  postgres_data:
+  redis_data:
+  mongodb_data:
+  neo4j_data:
+  neo4j_logs:
