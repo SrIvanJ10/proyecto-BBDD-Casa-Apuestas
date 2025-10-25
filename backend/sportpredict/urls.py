@@ -29,9 +29,14 @@ def services_status(request):
     }
     return JsonResponse(status)
 
+def test_api(request):
+    """API test para React"""
+    return JsonResponse({'message': '¡Backend Django funcionando correctamente con React!'})
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home_page, name='home'),
     path('health/', health_check, name='health'),
     path('status/', services_status, name='status'),
+    path('api/test/', test_api),
 ]
