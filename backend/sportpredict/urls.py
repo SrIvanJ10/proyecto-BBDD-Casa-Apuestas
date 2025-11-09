@@ -38,5 +38,16 @@ urlpatterns = [
     path('', home_page, name='home'),
     path('health/', health_check, name='health'),
     path('status/', services_status, name='status'),
-    path('api/test/', test_api),
+    path('usuarios/', include('sportpredict.usuarios.urls')),
+    path('predicciones/', include('sportpredict.predicciones.urls')),
+    path('deportes/', include('sportpredict.deportes.urls')),
+    path('equipos/', include('sportpredict.equipos.urls')),
+    path('partidos/', include('sportpredict.partidos.urls')),
+    
+    # Página principal
+    path('', include('sportpredict.predicciones.urls')),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
