@@ -67,7 +67,7 @@ DATABASES = {
     }
 }
 
-# Redis cache
+# Redis cache & sessions
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
@@ -77,6 +77,13 @@ CACHES = {
         }
     }
 }
+
+# Use Redis for session storage
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_CACHE_ALIAS = 'default'
+SESSION_COOKIE_AGE = 86400  # 24 hours
+SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
+SESSION_COOKIE_HTTPONLY = True
 
 # MongoDB connection (usando pymongo directamente en vistas)
 MONGODB_URI = 'mongodb://admin:PadreHijoEspiritu_Santo@mongodb:27017/'
