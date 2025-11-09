@@ -22,11 +22,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
-    'sportpredict.usuarios',
-    'sportpredict.predicciones', 
-    'sportpredict.deportes',
-    'sportpredict.equipos',
-    'sportpredict.partidos',
+    'sportpredict',
+    #'sportpredict.usuarios',
+    #'sportpredict.predicciones', 
+    #'sportpredict.deportes',
+    #'sportpredict.equipos',
+    #'sportpredict.partidos',
 
 ]
 
@@ -143,9 +144,9 @@ REST_FRAMEWORK = {
     ]
 }
 # Usar tu modelo de usuario personalizado
-AUTH_USER_MODEL = 'sportpredict.usuarios.Usuario'
+AUTH_USER_MODEL = 'sportpredict.Usuario'
 
 # URLs de login y logout
-LOGIN_URL = 'usuarios:login'
-LOGIN_REDIRECT_URL = 'predicciones:inicio'
-LOGOUT_REDIRECT_URL = 'predicciones:inicio'
+#LOGIN_URL = 'usuarios:login'
+#LOGIN_REDIRECT_URL = 'predicciones:inicio'
+#LOGOUT_REDIRECT_URL = 'predicciones:inicio'
