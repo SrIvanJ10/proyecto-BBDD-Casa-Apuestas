@@ -16,7 +16,7 @@ class Usuario(AbstractUser):
 class Deporte(models.Model):
     """Deportes disponibles en la plataforma"""
     nombre = models.CharField(max_length=50)
-    activo = models.BooleanField(default=True)
+    activo = models.BooleanField(default=True) #por si quieres activar el deporte
 
     def __str__(self):
         return self.nombre
