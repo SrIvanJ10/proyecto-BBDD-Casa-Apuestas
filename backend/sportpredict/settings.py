@@ -22,11 +22,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
-    'sportpredict.usuarios',
-    'sportpredict.predicciones', 
-    'sportpredict.deportes',
-    'sportpredict.equipos',
-    'sportpredict.partidos',
+    'sportpredict',
+    #'sportpredict.usuarios',
+    #'sportpredict.predicciones', 
+    #'sportpredict.deportes',
+    #'sportpredict.equipos',
+    #'sportpredict.partidos',
 
 ]
 
@@ -73,7 +74,7 @@ DATABASES = {
     }
 }
 
-# Redis cache
+# Redis cache & sessions
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
@@ -83,6 +84,13 @@ CACHES = {
         }
     }
 }
+
+# Use Redis for session storage
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
+SESSION_CACHE_ALIAS = 'default'
+SESSION_COOKIE_AGE = 86400  # 24 hours
+SESSION_COOKIE_SECURE = False  # Set to True in production with HTTPS
+SESSION_COOKIE_HTTPONLY = True
 
 # MongoDB connection (usando pymongo directamente en vistas)
 MONGODB_URI = 'mongodb://admin:PadreHijoEspiritu_Santo@mongodb:27017/'
@@ -136,9 +144,9 @@ REST_FRAMEWORK = {
     ]
 }
 # Usar tu modelo de usuario personalizado
-AUTH_USER_MODEL = 'sportpredict.usuarios.Usuario'
+AUTH_USER_MODEL = 'sportpredict.Usuario'
 
 # URLs de login y logout
-LOGIN_URL = 'usuarios:login'
-LOGIN_REDIRECT_URL = 'predicciones:inicio'
-LOGOUT_REDIRECT_URL = 'predicciones:inicio'
+#LOGIN_URL = 'usuarios:login'
+#LOGIN_REDIRECT_URL = 'predicciones:inicio'
+#LOGOUT_REDIRECT_URL = 'predicciones:inicio'
