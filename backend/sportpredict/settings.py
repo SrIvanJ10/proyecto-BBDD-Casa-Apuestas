@@ -10,7 +10,10 @@ SECRET_KEY = 'django-insecure-change-this-in-production'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']  # En desarrollo, permitir cualquier host
+ALLOWED_HOSTS = ['sportpredict_web:8000', '*']  # En desarrollo, permitir cualquier host
+
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Application definition
 INSTALLED_APPS = [
@@ -23,12 +26,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'sportpredict',
-    #'sportpredict.usuarios',
-    #'sportpredict.predicciones', 
-    #'sportpredict.deportes',
-    #'sportpredict.equipos',
-    #'sportpredict.partidos',
-
 ]
 
 MIDDLEWARE = [
@@ -36,7 +33,8 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    'sportpredict.middleware.DisableCSRFMiddleware',
+    #'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -146,7 +144,13 @@ REST_FRAMEWORK = {
 # Usar tu modelo de usuario personalizado
 AUTH_USER_MODEL = 'sportpredict.Usuario'
 
+#if DEBUG:
+#    CSRF_COOKIE_SECURE = False
+#    CSRF_COOKIE_HTTPONLY = False
+#    CSRF_TRUSTED_ORIGINS = ['http://localhost', 'https://localhost', 'http://bore.pub', 'https://bore.pub']
+
 # URLs de login y logout
 #LOGIN_URL = 'usuarios:login'
 #LOGIN_REDIRECT_URL = 'predicciones:inicio'
 #LOGOUT_REDIRECT_URL = 'predicciones:inicio'
+

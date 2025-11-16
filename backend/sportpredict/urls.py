@@ -37,9 +37,9 @@ def test_api(request):
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', home_page, name='home'),
     path('health/', health_check, name='health'),
     path('status/', services_status, name='status'),
+    path('', home_page, name='home'),
     #path('usuarios/', include('sportpredict.usuarios.urls')),
     #path('predicciones/', include('sportpredict.predicciones.urls')),
     #path('deportes/', include('sportpredict.deportes.urls')),
