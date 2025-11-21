@@ -1,10 +1,11 @@
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 from django.http import JsonResponse
 from django.shortcuts import render
 from django.conf import settings
 from django.conf.urls.static import static
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 from sportpredict.api.views import (
     api_partidos_proximos, lista_partidos, detalle_partido, 
@@ -33,6 +34,10 @@ schema_view = get_schema_view(
    public=True,
    permission_classes=(permissions.AllowAny,),
 )
+=======
+# Importar las vistas desde views.py
+from . import views  # ← AÑADE ESTA LÍNEA
+>>>>>>> 4e7fe49 (crear rama backend)
 
 def home_page(request):
     return render(request, 'home.html', {
@@ -66,6 +71,7 @@ urlpatterns = [
     path('', home_page, name='home'),
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     path('api/test/', test_api, name='api_test'),
     
     path('api/partidos/proximos/', api_partidos_proximos, name='api_partidos_proximos'),
@@ -85,6 +91,9 @@ urlpatterns = [
     path('api/recomendaciones/', recomendaciones, name='api_recomendaciones'),
 =======
     
+=======
+    
+>>>>>>> 4e7fe49 (crear rama backend)
     # ========== NUEVAS RUTAS API ==========
     
     # APIs públicas - Partidos
@@ -113,6 +122,7 @@ urlpatterns = [
     path('api/recomendaciones/', views.recomendaciones, name='api_recomendaciones'),
     
     # ========== FIN NUEVAS RUTAS ==========
+<<<<<<< HEAD
 >>>>>>> 4e7fe49 (crear rama backend)
 =======
     path('api/', include('sportpredict.api.urls')),  # ← Ruta completa del módulo
@@ -123,6 +133,8 @@ urlpatterns = [
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 >>>>>>> d381094 (v0.14)
+=======
+>>>>>>> 4e7fe49 (crear rama backend)
 ]
 
 if settings.DEBUG:

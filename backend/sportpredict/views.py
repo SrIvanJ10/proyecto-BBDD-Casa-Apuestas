@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -14,6 +15,20 @@ import json
 from .models import Usuario, Deporte, Equipo, Partido, Prediccion
 from sportpredict.db.redis import session_manager
 # from sportpredict.db.mongo_utils import log_prediccion_mongodb  # COMENTADO - No se usa en las nuevas APIs
+=======
+def inicio(request):
+    """Página principal con partidos próximos y destacados"""
+    partidos_proximos = Partido.objects.filter(
+        estado='PENDIENTE',
+        fecha_hora__gt=timezone.now()
+    ).order_by('fecha_hora')[:10]
+    
+    # ... más código ...
+    
+    return render(request, 'predicciones/inicio.html', context)
+
+from django.views.decorators.http import require_http_methods
+>>>>>>> 4e7fe49 (crear rama backend)
 
 @require_http_methods(["GET"])
 def inicio(request):
@@ -220,6 +235,115 @@ def detalle_partido(request, partido_id):
         'puede_predecir': partido.es_predecible() and request.user.is_authenticated,
     })
 
+<<<<<<< HEAD
+=======
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+@login_required
+@csrf_exempt  # Solo si usas tokens JWT, si usas sesiones quítalo
+@require_http_methods(["POST"])
+def hacer_prediccion(request, partido_id):
+    """API: Crear o actualizar predicción"""
+    try:
+        # Parsear JSON del body
+        data = json.loads(request.body)
+        prediccion_texto = data.get('prediccion', '').strip()
+        
+        partido = Partido.objects.get(id=partido_id)
+        
+        # Validaciones
+        if not partido.es_predecible():
+            return JsonResponse({
+                'success': False,
+                'error': 'No se pueden hacer predicciones para este partido'
+            }, status=400)
+        
+        # Rate limiting con Redis
+        hoy = timezone.now().strftime('%Y%m%d')
+        user_predictions_key = f"user_predictions:{request.user.id}:{hoy}"
+        current_predictions = redis_client.get(user_predictions_key)
+        current_predictions = int(current_predictions) if current_predictions else 0
+        
+        if current_predictions >= 10:
+            return JsonResponse({
+                'success': False,
+                'error': 'Límite diario alcanzado (10 predicciones máximo)',
+                'predicciones_hoy': current_predictions,
+                'limite': 10,
+            }, status=429)
+        
+        # Validar formato
+        if not re.match(r'^\d+-\d+$', prediccion_texto):
+            return JsonResponse({
+                'success': False,
+                'error': 'Formato inválido. Use: 2-1, 0-0, etc.'
+            }, status=400)
+        
+        # Verificar si ya existe
+        try:
+            prediccion_existente = Prediccion.objects.get(
+                usuario=request.user, 
+                partido=partido
+            )
+            prediccion_existente.prediccion = prediccion_texto
+            prediccion_existente.fecha_prediccion = timezone.now()
+            prediccion_existente.save()
+            action_type = 'updated'
+            prediccion = prediccion_existente
+        except Prediccion.DoesNotExist:
+            prediccion = Prediccion.objects.create(
+                usuario=request.user,
+                partido=partido,
+                prediccion=prediccion_texto
+            )
+            action_type = 'created'
+            
+            # Incrementar contador Redis
+            redis_client.incr(user_predictions_key)
+            if current_predictions == 0:
+                redis_client.expire(user_predictions_key, 86400)
+        
+        # Log en MongoDB
+        try:
+            log_prediccion_mongodb(
+                user_id=request.user.id,
+                partido_id=partido.id,
+                prediccion=prediccion_texto,
+                action_type=action_type,
+                predictions_today=current_predictions + (0 if action_type == 'updated' else 1)
+            )
+        except Exception as e:
+            print(f"Error logging to MongoDB: {e}")
+        
+        return JsonResponse({
+            'success': True,
+            'message': f"Predicción {'actualizada' if action_type == 'updated' else 'guardada'} correctamente",
+            'prediccion': {
+                'id': prediccion.id,
+                'prediccion': prediccion.prediccion,
+                'fecha_prediccion': prediccion.fecha_prediccion.isoformat(),
+            },
+            'predicciones_hoy': current_predictions + (0 if action_type == 'updated' else 1),
+        })
+        
+    except Partido.DoesNotExist:
+        return JsonResponse({
+            'success': False,
+            'error': 'Partido no encontrado'
+        }, status=404)
+    except json.JSONDecodeError:
+        return JsonResponse({
+            'success': False,
+            'error': 'JSON inválido'
+        }, status=400)
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)
+
+>>>>>>> 4e7fe49 (crear rama backend)
 
 @login_required
 @require_http_methods(["GET"])
@@ -617,6 +741,7 @@ def recomendaciones(request):
         ],
         'mensaje': 'Sistema de recomendaciones en desarrollo (usando Neo4j)',
     })
+<<<<<<< HEAD
 
 @csrf_exempt
 def trigger_sync(request):
@@ -675,3 +800,5 @@ def trigger_sync(request):
         return JsonResponse({'success': True, 'message': 'Sync completed successfully'})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+=======
+>>>>>>> 4e7fe49 (crear rama backend)
