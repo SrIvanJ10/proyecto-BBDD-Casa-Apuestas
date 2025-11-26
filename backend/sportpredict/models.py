@@ -4,13 +4,39 @@ from django.contrib.auth.models import AbstractUser
 
 class Usuario(AbstractUser):
     """Modelo de usuario personalizado"""
+    TIPO_SUSCRIPCION_CHOICES = [
+        ('FREE', 'Free'),
+        ('PREMIUM', 'Premium'),
+    ]
+    
     puntos_totales = models.IntegerField(default=0)
     nivel_experto = models.IntegerField(default=1)
     fecha_registro = models.DateTimeField(auto_now_add=True)
     avatar = models.URLField(blank=True, null=True)
+    tipo_suscripcion = models.CharField(
+        max_length=10,
+        choices=TIPO_SUSCRIPCION_CHOICES,
+        default='FREE'
+    )
     
     def __str__(self):
         return self.username
+    
+    def puede_apostar(self):
+        """
+        Verifica si el usuario puede realizar una apuesta.
+        - FREE: máximo 5 predicciones totales
+        - PREMIUM: requiere 500+ puntos, predicciones ilimitadas
+        """
+        from sportpredict.models import Prediccion
+        
+        # Si es premium, verificar que tenga al menos 500 puntos
+        if self.tipo_suscripcion == 'PREMIUM':
+            return self.puntos_totales >= 500
+        
+        # Si es free, verificar que no haya superado el límite de 5 predicciones
+        predicciones_count = Prediccion.objects.filter(usuario=self).count()
+        return predicciones_count < 5
 
 
 class Deporte(models.Model):

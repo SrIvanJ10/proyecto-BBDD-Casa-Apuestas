@@ -2,12 +2,16 @@ import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { getProfile } from '../services/userService';
 import { getUserPredictions } from '../services/predictionService';
+import { upgradeSubscription } from '../services/subscriptionService';
 
 const Profile = () => {
-    const { user } = useContext(AuthContext);
+    const { user, setUser } = useContext(AuthContext);
     const [profileData, setProfileData] = useState(null);
     const [predictions, setPredictions] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [upgrading, setUpgrading] = useState(false);
+    const [upgradeMessage, setUpgradeMessage] = useState('');
+    const [upgradeError, setUpgradeError] = useState('');
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -33,6 +37,29 @@ const Profile = () => {
         fetchProfile();
     }, [user]);
 
+    const handleUpgrade = async () => {
+        setUpgrading(true);
+        setUpgradeError('');
+        setUpgradeMessage('');
+
+        try {
+            const response = await upgradeSubscription();
+            setUpgradeMessage(response.message);
+
+            // Update user data
+            const updatedProfile = await getProfile();
+            setProfileData(updatedProfile);
+            if (setUser) {
+                setUser({ ...user, tipo_suscripcion: 'PREMIUM', puntos_totales: response.remaining_points });
+            }
+        } catch (error) {
+            const errorMsg = error.response?.data?.message || error.response?.data?.error || 'Error al actualizar suscripción';
+            setUpgradeError(errorMsg);
+        } finally {
+            setUpgrading(false);
+        }
+    };
+
     if (!user) {
         return <div className="container" style={{ padding: '4rem', textAlign: 'center' }}>Por favor inicia sesión para ver tu perfil.</div>;
     }
@@ -42,6 +69,7 @@ const Profile = () => {
     }
 
     const displayUser = profileData || user;
+    const subscriptionType = displayUser.tipo_suscripcion || 'FREE';
 
     return (
         <div className="container" style={{ paddingTop: '2rem', paddingBottom: '4rem' }}>
@@ -68,6 +96,56 @@ const Profile = () => {
                         </div>
                     </div>
                 </div>
+            </div>
+
+            {/* Subscription Section */}
+            <div className="card" style={{ marginBottom: '2rem', background: subscriptionType === 'PREMIUM' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : '#f7fafc', color: subscriptionType === 'PREMIUM' ? 'white' : 'inherit' }}>
+                <h3 style={{ marginBottom: '1rem', color: subscriptionType === 'PREMIUM' ? 'white' : 'inherit' }}>
+                    {subscriptionType === 'PREMIUM' ? '⭐ Suscripción Premium' : '📦 Plan Gratuito'}
+                </h3>
+
+                {subscriptionType === 'FREE' ? (
+                    <>
+                        <p style={{ marginBottom: '1rem', color: 'var(--text-secondary)' }}>
+                            Tienes un límite de 5 apuestas totales. Actualiza a Premium para apuestas ilimitadas.
+                        </p>
+                        <div style={{ marginBottom: '1rem' }}>
+                            <strong>Beneficios Premium:</strong>
+                            <ul style={{ marginTop: '0.5rem', paddingLeft: '1.5rem' }}>
+                                <li>Apuestas ilimitadas</li>
+                                <li>Sin restricciones</li>
+                                <li>Acceso completo a todas las funciones</li>
+                            </ul>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                            <button
+                                className="btn btn-primary"
+                                onClick={handleUpgrade}
+                                disabled={upgrading || displayUser.puntos_totales < 500}
+                                style={{ opacity: (upgrading || displayUser.puntos_totales < 500) ? 0.6 : 1 }}
+                            >
+                                {upgrading ? 'Actualizando...' : 'Actualizar a Premium (500 puntos)'}
+                            </button>
+                            {displayUser.puntos_totales < 500 && (
+                                <span style={{ color: '#e53e3e', fontSize: '0.9rem' }}>
+                                    Necesitas {500 - displayUser.puntos_totales} puntos más
+                                </span>
+                            )}
+                        </div>
+                        {upgradeMessage && (
+                            <div style={{ marginTop: '1rem', padding: '0.75rem', background: '#c6f6d5', color: '#22543d', borderRadius: '0.5rem' }}>
+                                {upgradeMessage}
+                            </div>
+                        )}
+                        {upgradeError && (
+                            <div style={{ marginTop: '1rem', padding: '0.75rem', background: '#fed7d7', color: '#c53030', borderRadius: '0.5rem' }}>
+                                {upgradeError}
+                            </div>
+                        )}
+                    </>
+                ) : (
+                    <p>¡Disfruta de apuestas ilimitadas con tu suscripción Premium!</p>
+                )}
             </div>
 
             <h3 style={{ marginBottom: '1.5rem' }}>Mis Apuestas Recientes</h3>

@@ -68,11 +68,21 @@ const MatchCard = ({ match, live = false, onPredictionSuccess }) => {
             }
 
         } catch (err) {
-            const errorMsg = err.response?.data?.error || err.response?.data?.message || 'Error al realizar la apuesta';
+            // Manejar errores de suscripción con mensajes detallados
+            const errorData = err.response?.data;
+            let errorMsg = err.response?.data?.error || err.response?.data?.message || 'Error al realizar la apuesta';
+
+            // Si es un error de límite de suscripción, mostrar información adicional
+            if (errorData?.subscription_type === 'FREE' && errorData?.predictions_made !== undefined) {
+                errorMsg = `${errorMsg}\n\nApuestas realizadas: ${errorData.predictions_made}/${errorData.max_predictions}`;
+            } else if (errorData?.subscription_type === 'PREMIUM' && errorData?.current_points !== undefined) {
+                errorMsg = `${errorMsg}\n\nPuntos actuales: ${errorData.current_points}/${errorData.required_points}`;
+            }
+
             setError(errorMsg);
 
-            // Auto-cerrar error después de 5 segundos
-            setTimeout(() => setError(''), 5000);
+            // Auto-cerrar error después de 8 segundos para dar tiempo a leer
+            setTimeout(() => setError(''), 8000);
         } finally {
             setLoading(false);
         }
