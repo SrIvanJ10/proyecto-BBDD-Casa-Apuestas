@@ -1,0 +1,28 @@
+{
+  "similar_users": [
+    {
+      "user_id": 456,
+      "username": "predictionmaster",
+      "similarity_score": 0.824,
+      "common_matches": 15,
+      "both_correct_predictions": 12,
+      "common_interests": ["Football", "La Liga", "Champions League"]
+    },
+    {
+      "user_id": 789,
+      "username": "sportsanalyst",
+      "similarity_score": 0.756,
+      "common_matches": 11,
+      "both_correct_predictions": 8,
+      "common_interests": ["Football", "Premier League", "Basketball"]
+    },
+    {
+      "user_id": 234,
+      "username": "goalpredictor",
+      "similarity_score": 0.698,
+      "common_matches": 9,
+      "both_correct_predictions": 6,
+      "common_interests": ["Football", "La Liga", "International"]
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "predictions": [
+    {
+      "id": 1234,
+      "usuario_id": 123,
+      "partido": {
+        "id": 1,
+        "equipo_local": {
+          "id": 10,
+          "nombre": "FC Barcelona",
+          "logo_url": "/static/logos/barcelona.png"
+        },
+        "equipo_visitante": {
+          "id": 11,
+          "nombre": "Real Madrid", 
+          "logo_url": "/static/logos/realmadrid.png"
+        },
+        "fecha_hora": "2024-03-20T20:00:00Z",
+        "liga": "La Liga",
+        "estado": "upcoming",
+        "resultado_final": null
+      },
+      "prediccion": "2-1",
+      "puntos_obtenidos": null,
+      "fecha_prediccion": "2024-03-19T15:30:00Z",
+      "correcta": null
+    }
+  ]
+}

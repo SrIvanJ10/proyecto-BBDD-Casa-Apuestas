@@ -1,0 +1,59 @@
+{
+  "user_stats": {
+    "total_predictions": 45,
+    "correct_predictions": 28,
+    "success_rate": 62.2,
+    "current_streak": 3,
+    "max_streak": 8,
+    "weekly_activity": 12,
+    "favorite_sport": "Football",
+    "total_points": 1500,
+    "ranking": 245,
+    "accuracy_trend": "improving"
+  },
+  "global_stats": {
+    "total_predictions_today": 12500,
+    "active_users_today": 3420,
+    "new_registrations_today": 156,
+    "total_users": 45890,
+    "platform_success_rate": 52.3,
+    "avg_predictions_per_user": 4.3
+  },
+  "popular_matches": [
+    {
+      "match_id": 1,
+      "match_name": "FC Barcelona vs Real Madrid",
+      "prediction_count": 1250,
+      "trending": true,
+      "sport": "Football",
+      "league": "La Liga"
+    }
+  ],
+  "performance_trend": [
+    {
+      "date": "2024-03-12",
+      "success_rate": 58.3,
+      "predictions": 3,
+      "points_earned": 45
+    }
+  ],
+  "personal_insights": [
+    {
+      "type": "success",
+      "title": "¡Racha positiva!",
+      "message": "Llevas 3 predicciones acertadas seguidas",
+      "icon": "🔥",
+      "priority": "high"
+    }
+  ],
+  "notifications": [
+    {
+      "id": 1,
+      "type": "achievement",
+      "title": "¡Nuevo logro desbloqueado!",
+      "message": "Has alcanzado el nivel 3 de experiencia",
+      "timestamp": "2024-03-19T10:30:00Z",
+      "read": false
+    }
+  ]
+}

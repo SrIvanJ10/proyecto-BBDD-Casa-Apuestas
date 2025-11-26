@@ -1,0 +1,16 @@
+{
+  "matches": [
+    {
+      "match_id": 1,
+      "match_name": "FC Barcelona vs Real Madrid",
+      "prediction_count": 1250,
+      "trending": true,
+      "sport": "Football",
+      "league": "La Liga",
+      "avg_prediction": "2-1",
+      "difficulty_level": "medium"
+    }
+  ],
+  "trending_sports": [
+    {
+     

@@ -1,0 +1,23 @@
+{
+  "recommendations": [
+    {
+      "match": {
+        "id": 2,
+        "equipo_local": {
+          "id": 12,
+          "nombre": "Manchester United",
+          "logo_url": "/static/logos/manutd.png",
+          "sport": "Football"
+        },
+        "equipo_visitante": {
+          "id": 13,
+          "nombre": "Liverpool",
+          "logo_url": "/static/logos/liverpool.png",
+          "sport": "Football"
+        },
+        "fecha_hora": "2024-03-21T15:00:00Z",
+        "liga": "Premier League",
+        "estado": "upcoming"
+      },
+      "confidence_score": 0.88,
+      "reason": "Coincide perfectamente con tu perfil de ligas

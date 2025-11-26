@@ -1,0 +1,19 @@
+{
+  "id": 123,
+  "email": "user@example.com",
+  "username": "johndoe",
+  "first_name": "John",
+  "last_name": "Doe",
+  "puntos_totales": 1500,
+  "nivel_experto": 3,
+  "fecha_registro": "2024-01-15T10:30:00Z",
+  "stats": {
+    "total_predictions": 45,
+    "correct_predictions": 28,
+    "success_rate": 62.2,
+    "current_streak": 3
+    "max_streak": 8,
+    "weekly_activity": 12,
+    "ranking": 245
+  }
+}

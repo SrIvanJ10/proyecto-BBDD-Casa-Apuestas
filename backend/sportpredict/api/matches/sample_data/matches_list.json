@@ -1,0 +1,111 @@
+{
+  "matches": [
+    {
+      "id": 1,
+      "equipo_local": {
+        "id": 10,
+        "nombre": "FC Barcelona",
+        "logo_url": "/static/logos/barcelona.png",
+        "sport": "Football"
+      },
+      "equipo_visitante": {
+        "id": 11,
+        "nombre": "Real Madrid",
+        "logo_url": "/static/logos/realmadrid.png",
+        "sport": "Football"
+      },
+      "fecha_hora": "2024-03-20T20:00:00Z",
+      "liga": "La Liga",
+      "estado": "upcoming",
+      "user_prediction": null,
+      "prediction_count": 1250
+    },
+    {
+      "id": 2,
+      "equipo_local": {
+        "id": 12,
+        "nombre": "Manchester United",
+        "logo_url": "/static/logos/manutd.png",
+        "sport": "Football"
+      },
+      "equipo_visitante": {
+        "id": 13,
+        "nombre": "Liverpool",
+        "logo_url": "/static/logos/liverpool.png",
+        "sport": "Football"
+      },
+      "fecha_hora": "2024-03-21T15:00:00Z",
+      "liga": "Premier League",
+      "estado": "upcoming",
+      "user_prediction": null,
+      "prediction_count": 980
+    },
+    {
+      "id": 3,
+      "equipo_local": {
+        "id": 14,
+        "nombre": "Golden State Warriors",
+        "logo_url": "/static/logos/warriors.png",
+        "sport": "Basketball"
+      },
+      "equipo_visitante": {
+        "id": 15,
+        "nombre": "LA Lakers",
+        "logo_url": "/static/logos/lakers.png",
+        "sport": "Basketball"
+      },
+      "fecha_hora": "2024-03-22T22:30:00Z",
+      "liga": "NBA",
+      "estado": "upcoming",
+      "user_prediction": null,
+      "prediction_count": 650
+    },
+    {
+      "id": 4,
+      "equipo_local": {
+        "id": 16,
+        "nombre": "Bayern Munich",
+        "logo_url": "/static/logos/bayern.png",
+        "sport": "Football"
+      },
+      "equipo_visitante": {
+        "id": 17,
+        "nombre": "Borussia Dortmund",
+        "logo_url": "/static/logos/dortmund.png",
+        "sport": "Football"
+      },
+      "fecha_hora": "2024-03-19T18:30:00Z",
+      "liga": "Bundesliga",
+      "estado": "live",
+      "user_prediction": null,
+      "prediction_count": 720
+    },
+    {
+      "id": 5,
+      "equipo_local": {
+        "id": 18,
+        "nombre": "PSG",
+        "logo_url": "/static/logos/psg.png",
+        "sport": "Football"
+      },
+      "equipo_visitante": {
+        "id": 19,
+        "nombre": "Marseille",
+        "logo_url": "/static/logos/marseille.png",
+        "sport": "Football"
+      },
+      "fecha_hora": "2024-03-18T20:00:00Z",
+      "liga": "Ligue 1",
+      "estado": "finished",
+      "resultado_final": "2-1",
+      "user_prediction": null,
+      "prediction_count": 890
+    }
+  ],
+  "pagination": {
+    "total": 150,
+    "page": 1,
+    "page_size": 20,
+    "total_pages": 8
+  }
+}

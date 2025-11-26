@@ -1,0 +1,26 @@
+{
+  "recommended_teams": [
+    {
+      "team": {
+        "id": 16,
+        "nombre": "Bayern Munich",
+        "sport": "Football",
+        "liga": "Bundesliga"
+      },
+      "recommendation_strength": 3,
+      "reason": "Similar a tu éxito con el FC Barcelona - equipos dominantes en sus ligas",
+      "confidence": 0.78
+    },
+    {
+      "team": {
+        "id": 17,
+        "nombre": "Manchester City",
+        "sport": "Football",
+        "liga": "Premier League"
+      },
+      "recommendation_strength": 2,
+      "reason": "Basado en tu patrón de aciertos con equipos de posesión ofensiva",
+      "confidence": 0.65
+    }
+  ]
+}

@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 3000,
-    allowedHosts: ['sportpredict_frontend', 'bore.pub', 'localhost', '127.0.0.1'],
+    allowedHosts: ['75c9e95909bd.ngrok-free.app', 'sportpredict_frontend', 'bore.pub', 'localhost', '127.0.0.1'],
     proxy: {
       '/api': {
         target: 'http://web:8000',
