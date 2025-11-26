@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'; // Force rebuild
 import {
     getAdminUsers, deleteAdminUser,
     getAdminSports, createAdminSport, deleteAdminSport,
     getAdminTeams, createAdminTeam, deleteAdminTeam,
-    getAdminMatches, createAdminMatch, updateAdminMatch, deleteAdminMatch,
-    getAdminPredictions, deleteAdminPrediction
+    getAdminMatches, createAdminMatch, updateAdminMatch, deleteAdminMatch
 } from '../services/adminService';
 
 const Admin = () => {
@@ -18,7 +17,6 @@ const Admin = () => {
     const [sports, setSports] = useState([]);
     const [teams, setTeams] = useState([]);
     const [matches, setMatches] = useState([]);
-    const [predictions, setPredictions] = useState([]);
 
     // Form states
     const [newSport, setNewSport] = useState('');
@@ -54,10 +52,7 @@ const Admin = () => {
                     const teamsForMatches = await getAdminTeams();
                     setTeams(teamsForMatches.teams || []);
                     break;
-                case 'predictions':
-                    const predsData = await getAdminPredictions();
-                    setPredictions(predsData.predictions || []);
-                    break;
+
             }
         } catch (err) {
             setError(err.response?.data?.error || 'Error cargando datos');
@@ -156,23 +151,13 @@ const Admin = () => {
         }
     };
 
-    const handleDeletePrediction = async (predId) => {
-        if (!window.confirm('¿Eliminar esta predicción?')) return;
-        try {
-            await deleteAdminPrediction(predId);
-            setMessage('Predicción eliminada');
-            loadData();
-        } catch (err) {
-            setError(err.response?.data?.error || 'Error');
-        }
-    };
+
 
     const tabs = [
         { id: 'users', label: '👥 Usuarios' },
         { id: 'sports', label: '⚽ Deportes' },
         { id: 'teams', label: '🏆 Equipos' },
-        { id: 'matches', label: '📅 Partidos' },
-        { id: 'predictions', label: '🎯 Predicciones' }
+        { id: 'matches', label: '📅 Partidos' }
     ];
 
     return (
@@ -416,45 +401,7 @@ const Admin = () => {
                         </div>
                     )}
 
-                    {/* PREDICTIONS TAB */}
-                    {activeTab === 'predictions' && (
-                        <div className="card">
-                            <h2 style={{ marginBottom: '1rem' }}>Predicciones ({predictions.length})</h2>
-                            <div style={{ overflowX: 'auto' }}>
-                                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-                                    <thead>
-                                        <tr style={{ borderBottom: '2px solid #e2e8f0' }}>
-                                            <th style={{ padding: '0.75rem', textAlign: 'left' }}>ID</th>
-                                            <th style={{ padding: '0.75rem', textAlign: 'left' }}>Usuario</th>
-                                            <th style={{ padding: '0.75rem', textAlign: 'left' }}>Partido</th>
-                                            <th style={{ padding: '0.75rem', textAlign: 'left' }}>Predicción</th>
-                                            <th style={{ padding: '0.75rem', textAlign: 'left' }}>Puntos</th>
-                                            <th style={{ padding: '0.75rem', textAlign: 'left' }}>Acciones</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {predictions.map(pred => (
-                                            <tr key={pred.id} style={{ borderBottom: '1px solid #e2e8f0' }}>
-                                                <td style={{ padding: '0.75rem' }}>{pred.id}</td>
-                                                <td style={{ padding: '0.75rem' }}>{pred.usuario_username || pred.usuario}</td>
-                                                <td style={{ padding: '0.75rem' }}>{pred.partido_id}</td>
-                                                <td style={{ padding: '0.75rem' }}>{pred.prediccion}</td>
-                                                <td style={{ padding: '0.75rem' }}>{pred.puntos_obtenidos || 0}</td>
-                                                <td style={{ padding: '0.75rem' }}>
-                                                    <button
-                                                        onClick={() => handleDeletePrediction(pred.id)}
-                                                        style={{ padding: '0.5rem 1rem', background: '#e53e3e', color: 'white', border: 'none', borderRadius: '0.25rem', cursor: 'pointer' }}
-                                                    >
-                                                        Eliminar
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    )}
+
                 </>
             )}
         </div>
