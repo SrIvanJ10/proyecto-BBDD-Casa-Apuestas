@@ -108,6 +108,9 @@ def update_profile(request):
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 4e74b6e (v1.0)
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def update_username(request):
@@ -208,8 +211,11 @@ def update_password(request):
         )
 
 
+<<<<<<< HEAD
 =======
 >>>>>>> d381094 (v0.14)
+=======
+>>>>>>> 4e74b6e (v1.0)
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def leaderboard(request):

@@ -1,9 +1,18 @@
+<<<<<<< HEAD
 import React, { useState, useEffect } from 'react'; // Force rebuild
+=======
+import React, { useState, useEffect } from 'react';
+>>>>>>> 4e74b6e (v1.0)
 import {
     getAdminUsers, deleteAdminUser,
     getAdminSports, createAdminSport, deleteAdminSport,
     getAdminTeams, createAdminTeam, deleteAdminTeam,
+<<<<<<< HEAD
     getAdminMatches, createAdminMatch, updateAdminMatch, deleteAdminMatch
+=======
+    getAdminMatches, createAdminMatch, updateAdminMatch, deleteAdminMatch,
+    getAdminPredictions, deleteAdminPrediction
+>>>>>>> 4e74b6e (v1.0)
 } from '../services/adminService';
 
 const Admin = () => {
@@ -17,6 +26,10 @@ const Admin = () => {
     const [sports, setSports] = useState([]);
     const [teams, setTeams] = useState([]);
     const [matches, setMatches] = useState([]);
+<<<<<<< HEAD
+=======
+    const [predictions, setPredictions] = useState([]);
+>>>>>>> 4e74b6e (v1.0)
 
     // Form states
     const [newSport, setNewSport] = useState('');
@@ -52,7 +65,14 @@ const Admin = () => {
                     const teamsForMatches = await getAdminTeams();
                     setTeams(teamsForMatches.teams || []);
                     break;
+<<<<<<< HEAD
 
+=======
+                case 'predictions':
+                    const predsData = await getAdminPredictions();
+                    setPredictions(predsData.predictions || []);
+                    break;
+>>>>>>> 4e74b6e (v1.0)
             }
         } catch (err) {
             setError(err.response?.data?.error || 'Error cargando datos');
@@ -151,13 +171,31 @@ const Admin = () => {
         }
     };
 
+<<<<<<< HEAD
 
+=======
+    const handleDeletePrediction = async (predId) => {
+        if (!window.confirm('¿Eliminar esta predicción?')) return;
+        try {
+            await deleteAdminPrediction(predId);
+            setMessage('Predicción eliminada');
+            loadData();
+        } catch (err) {
+            setError(err.response?.data?.error || 'Error');
+        }
+    };
+>>>>>>> 4e74b6e (v1.0)
 
     const tabs = [
         { id: 'users', label: '👥 Usuarios' },
         { id: 'sports', label: '⚽ Deportes' },
         { id: 'teams', label: '🏆 Equipos' },
+<<<<<<< HEAD
         { id: 'matches', label: '📅 Partidos' }
+=======
+        { id: 'matches', label: '📅 Partidos' },
+        { id: 'predictions', label: '🎯 Predicciones' }
+>>>>>>> 4e74b6e (v1.0)
     ];
 
     return (
@@ -401,7 +439,49 @@ const Admin = () => {
                         </div>
                     )}
 
+<<<<<<< HEAD
 
+=======
+                    {/* PREDICTIONS TAB */}
+                    {activeTab === 'predictions' && (
+                        <div className="card">
+                            <h2 style={{ marginBottom: '1rem' }}>Predicciones ({predictions.length})</h2>
+                            <div style={{ overflowX: 'auto' }}>
+                                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                                    <thead>
+                                        <tr style={{ borderBottom: '2px solid #e2e8f0' }}>
+                                            <th style={{ padding: '0.75rem', textAlign: 'left' }}>ID</th>
+                                            <th style={{ padding: '0.75rem', textAlign: 'left' }}>Usuario</th>
+                                            <th style={{ padding: '0.75rem', textAlign: 'left' }}>Partido</th>
+                                            <th style={{ padding: '0.75rem', textAlign: 'left' }}>Predicción</th>
+                                            <th style={{ padding: '0.75rem', textAlign: 'left' }}>Puntos</th>
+                                            <th style={{ padding: '0.75rem', textAlign: 'left' }}>Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {predictions.map(pred => (
+                                            <tr key={pred.id} style={{ borderBottom: '1px solid #e2e8f0' }}>
+                                                <td style={{ padding: '0.75rem' }}>{pred.id}</td>
+                                                <td style={{ padding: '0.75rem' }}>{pred.usuario_username || pred.usuario}</td>
+                                                <td style={{ padding: '0.75rem' }}>{pred.partido_id}</td>
+                                                <td style={{ padding: '0.75rem' }}>{pred.prediccion}</td>
+                                                <td style={{ padding: '0.75rem' }}>{pred.puntos_obtenidos || 0}</td>
+                                                <td style={{ padding: '0.75rem' }}>
+                                                    <button
+                                                        onClick={() => handleDeletePrediction(pred.id)}
+                                                        style={{ padding: '0.5rem 1rem', background: '#e53e3e', color: 'white', border: 'none', borderRadius: '0.25rem', cursor: 'pointer' }}
+                                                    >
+                                                        Eliminar
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    )}
+>>>>>>> 4e74b6e (v1.0)
                 </>
             )}
         </div>

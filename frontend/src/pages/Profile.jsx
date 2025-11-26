@@ -26,6 +26,7 @@ const Profile = () => {
     const [passwordData, setPasswordData] = useState({ current: '', new: '' });
     const [passwordMessage, setPasswordMessage] = useState('');
     const [passwordError, setPasswordError] = useState('');
+<<<<<<< HEAD
 =======
 =======
 import { upgradeSubscription } from '../services/subscriptionService';
@@ -43,6 +44,8 @@ const Profile = () => {
     const [upgradeMessage, setUpgradeMessage] = useState('');
     const [upgradeError, setUpgradeError] = useState('');
 >>>>>>> db693ad (v0.9)
+=======
+>>>>>>> 4e74b6e (v1.0)
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -96,6 +99,9 @@ const Profile = () => {
     };
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 4e74b6e (v1.0)
     const handleUpdateUsername = async (e) => {
         e.preventDefault();
         setUsernameError('');
@@ -128,10 +134,13 @@ const Profile = () => {
         }
     };
 
+<<<<<<< HEAD
 =======
 >>>>>>> d381094 (v0.14)
 =======
 >>>>>>> db693ad (v0.9)
+=======
+>>>>>>> 4e74b6e (v1.0)
     if (!user) {
         return <div className="container" style={{ padding: '4rem', textAlign: 'center' }}>Por favor inicia sesión para ver tu perfil.</div>;
     }
@@ -232,6 +241,9 @@ const Profile = () => {
             </div>
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 4e74b6e (v1.0)
             {/* Edit Username Section */}
             <div className="card" style={{ marginBottom: '2rem' }}>
                 <h3 style={{ marginBottom: '1rem' }}>Editar Nombre de Usuario</h3>
@@ -320,10 +332,13 @@ const Profile = () => {
                 )}
             </div>
 
+<<<<<<< HEAD
 =======
 >>>>>>> d381094 (v0.14)
 =======
 >>>>>>> db693ad (v0.9)
+=======
+>>>>>>> 4e74b6e (v1.0)
             <h3 style={{ marginBottom: '1.5rem' }}>Mis Apuestas Recientes</h3>
             {predictions.length > 0 ? (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
