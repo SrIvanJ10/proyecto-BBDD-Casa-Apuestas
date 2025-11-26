@@ -1,0 +1,19 @@
+{
+  "id": 1234,
+  "usuario_id": 123,
+  "partido_id": 1,
+  "prediccion": "2-1",
+  "puntos_obtenidos": null,
+  "fecha_prediccion": "2024-03-19T15:30:00Z",
+  "correcta": null,
+  "partido": {
+    "id": 1,
+    "equipo_local": {"nombre": "FC Barcelona"},
+    "equipo_visitante": {"nombre": "Real Madrid"},
+    "fecha_hora": "2024-03-20T20:00:00Z",
+    "liga": "La Liga",
+    "estado": "upcoming"
+  },
+  "message": "Predicción creada exitosamente",
+  "remaining_predictions_today": 7
+}

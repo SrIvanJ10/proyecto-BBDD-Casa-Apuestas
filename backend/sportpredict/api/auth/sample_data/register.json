@@ -1,0 +1,13 @@
+{
+  "email": "user@example.com",
+  "username": "johndoe",
+  "password": "securepassword123",
+  "first_name": "John",
+  "last_name": "Doe"
+}
+
+{
+  "message": "Registration successful. OTP sent to email.",
+  "user_id": 123,
+  "requires_otp_verification": true
+}

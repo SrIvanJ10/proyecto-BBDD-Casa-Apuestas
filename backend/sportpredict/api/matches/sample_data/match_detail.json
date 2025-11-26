@@ -1,0 +1,32 @@
+{
+  "matches": [
+    {
+      "id": 1,
+      "equipo_local": {
+        "id": 10,
+        "nombre": "FC Barcelona",
+        "logo_url": "/static/logos/barcelona.png",
+        "sport": "Football",
+        "estadio": "Camp Nou",
+        "ciudad": "Barcelona"
+      },
+      "equipo_visitante": {
+        "id": 11,
+        "nombre": "Real Madrid",
+        "logo_url": "/static/logos/realmadrid.png",
+        "sport": "Football",
+        "estadio": "Santiago Bernabéu",
+        "ciudad": "Madrid"
+      },
+      "fecha_hora": "2024-03-20T20:00:00Z",
+      "liga": "La Liga",
+      "estado": "upcoming",
+      "resultado_final": null,
+      "arbitro": "José María Sánchez Martínez",
+      "estadio": "Camp Nou",
+      "asistencia_esperada": 98772,
+      "user_prediction": null,
+      "prediction_count": 1250
+    }
+  ]
+}

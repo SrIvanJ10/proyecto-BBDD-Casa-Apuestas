@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<!---Metadatos importantes -->
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sport 365 - Plataforma de Apuestas Deportivas</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+
+<body>
+    <!-- Header con interacciones a la seccion que queramos -->
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">Sport<span>365</span></h1>
+            <nav class="nav">
+                <a href="#inicio">Inicio</a>
+                <a href="#partidos">Partidos</a>
+                <a href="#apuestas">Mis Apuestas</a>
+                <a href="#ranking">Ranking</a>
+                <a href="#recomendaciones">Recomendaciones</a>
+            </nav>
+            <div class="user-actions">
+                <button class="login-container" id="login">Iniciar Sesión</button>
+                <button class="register-container" id="register">Registrarse</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main class="main">
+        <!-- Bienvenida a la plataforma -->
+        <section id="inicio" class="hero">
+            <div class="container">
+                <h2>Bienvenido a Sport 365</h2>
+                <p>Plataforma de <strong>apuestas deportivas</strong> para fútbol y baloncesto</p>
+                <button class="comenzar-container" id="comenzar">Comenzar a Apostar</button>
+            </div>
+        </section>
+
+        <!-- Sección de Partidos -->
+        <section id="partidos" class="section">
+            <div class="container">
+                <h2 class="title">Partidos Disponibles</h2>
+                <div class="matches-container" id="matches">
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Apuestas -->
+        <section id="apuestas" class="section">
+            <div class="container">
+                <h2 class="title">Mis Apuestas</h2>
+                <div class="bets-container" id="bets">
+                </div>
+            </div>
+        </section>
+
+        <!-- Sección de Ranking -->
+        <section id="ranking" class="section">
+            <div class="container">
+                <h2 class="title">Ranking de Usuarios</h2>
+                <table class="ranking-table">
+                    <thead>
+                        <tr>
+                            <th>Posición</th>
+                            <th>Usuario</th>
+                            <th>Aciertos</th>
+                            <th>Porcentaje</th>
+                            <th>Puntos</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rankingBody">
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Sección de Recomendaciones -->
+        <section id="recomendaciones" class="section">
+            <div class="container">
+                <h2 class="title">Recomendaciones Para Ti</h2>
+                <div class="recommendations-container" id="recommendations">
+                </div>
+            </div>
+        </section>
+
+        <!-- Formulario de Contacto y registro -->
+        <section class="section">
+            <div class="container">
+                <h2 class="title">Registrate para comenzar</h2>
+                <form class="contact-container" id="contact">
+                    <div class="group">
+                        <label for="name">Nombre completo</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="group">
+                        <label for="email">Correo electrónico</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="group">
+                        <label for="sport">Deporte favorito</label>
+                        <select id="sport" name="sport">
+                            <option value="futbol">Fútbol</option>
+                            <option value="baloncesto">Baloncesto</option>
+                        </select>
+                    </div>
+                    <div class="group">
+                        <label for="newsletter">
+                            <input type="checkbox" id="newsletter" name="newsletter">
+                            <span>Apuntarme al newsletter</span>
+                        </label>
+                    </div>
+                    <button type="submit" class="register-container">Registrarme</button>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Sport 365</h3>
+                    <p>Plataforma desarrollada para el curso de Ampliación de Bases de Datos</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Enlaces</h3>
+                    <ul class="footer-links">
+                        <li><a href="#inicio">Inicio</a></li>
+                        <li><a href="#partidos">Partidos</a></li>
+                        <li><a href="#ranking">Ranking</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contacto</h3>
+                    <address>
+                        <p>Correo: sport365@gmail.com</p>
+                        <p>Teléfono: XXXXXXXXX</p>
+                        <p>Universidad Loyola</p>
+                    </address>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Sport 365. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

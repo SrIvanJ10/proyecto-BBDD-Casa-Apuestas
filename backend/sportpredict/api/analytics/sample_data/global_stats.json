@@ -1,0 +1,51 @@
+{
+  "user_metrics": {
+    "total_users": 45890,
+    "active_users_today": 3420,
+    "new_users_today": 156,
+    "retention_rate": 72.5,
+    "avg_session_duration": 12.3
+  },
+  "prediction_metrics": {
+    "total_predictions": 1256800,
+    "predictions_today": 12500,
+    "avg_success_rate": 52.3,
+    "most_active_sport": "Football",
+    "total_points_distributed": 1256000
+  },
+  "revenue_metrics": {
+    "total_volume": 458900,
+    "daily_volume": 12500,
+    "avg_prediction_value": 10.5,
+    "premium_users": 1256
+  },
+  "trending_data": {
+    "hot_streaks": [
+      {"username": "predictionking", "streak": 12},
+      {"username": "luckyguess", "streak": 9}
+    ],
+    "rising_sports": ["Tennis", "Basketball"],
+    "popular_leagues": ["Premier League", "La Liga", "NBA"],
+    "trending_hashtags": ["#ElClásico", "#DerbyDay"]
+  },
+  "platform_analysis": {
+    "growth_rate": 15.8,
+    "user_engagement": {
+      "daily_active_users": 3420,
+      "weekly_active_users": 12560,
+      "monthly_active_users": 28900,
+      "avg_predictions_per_user": 4.3,
+      "avg_session_count": 2.1
+    },
+    "popular_features": [
+      {"feature": "Live Predictions", "usage": 85},
+      {"feature": "Leaderboard", "usage": 72}
+    ],
+    "system_health": {
+      "status": "healthy",
+      "response_time": 124.5,
+      "uptime": 99.8,
+      "active_connections": 2450
+    }
+  }
+}

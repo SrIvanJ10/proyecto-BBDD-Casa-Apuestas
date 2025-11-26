@@ -1,0 +1,45 @@
+{
+  "basic_stats": {
+    "total_predictions": 45,
+    "correct_predictions": 28,
+    "success_rate": 62.2,
+    "total_points": 1500,
+    "current_streak": 3,
+    "max_streak": 8,
+    "avg_points_per_prediction": 33.3
+  },
+  "performance_trend": [
+    {
+      "date": "2024-03-12",
+      "predictions": 3,
+      "correct": 2,
+      "points_earned": 45,
+      "success_rate": 66.7
+    },
+    {
+      "date": "2024-03-13", 
+      "predictions": 5,
+      "correct": 4,
+      "points_earned": 85,
+      "success_rate": 80.0
+    }
+  ],
+  "sport_analysis": [
+    {
+      "sport": "Football",
+      "predictions": 32,
+      "correct": 21,
+      "success_rate": 65.6,
+      "total_points": 1100,
+      "best_prediction": "2-1"
+    }
+  ],
+  "insights": [
+    {
+      "type": "strength",
+      "title": "Eres fuerte en partidos de local",
+      "description": "Tienes un 75% de aciertos cuando el equipo local juega en casa",
+      "icon": "🏠"
+    }
+  ]
+}

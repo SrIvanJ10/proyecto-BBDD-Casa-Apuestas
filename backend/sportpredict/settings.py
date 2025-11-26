@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     'sportpredict',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -92,7 +93,7 @@ SESSION_COOKIE_HTTPONLY = True
 
 # MongoDB connection (usando pymongo directamente en vistas)
 MONGODB_URI = 'mongodb://admin:PadreHijoEspiritu_Santo@mongodb:27017/'
-MONGODB_DB = 'sportpredict'
+MONGODB_DB_NAME = 'sportpredict'
 
 # Neo4j connection (usando neo4j driver directamente)
 NEO4J_URI = 'bolt://neo4j:7687'
@@ -132,13 +133,23 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
     "http://frontend:3000",
+    # Vite dev server (default port)
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+    # Network access
+    "http://192.168.1.239:5173",
+    "http://192.168.1.239:3000",
+    "http://192.168.1.239:8000",
 ]
 
 CORS_ALLOW_CREDENTIALS = True
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'sportpredict.api.utils.authentication.JWTAuthentication',
+    ],
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',  # Temporal para desarrollo
+        'rest_framework.permissions.AllowAny',  # Las vistas individuales controlan permisos
     ]
 }
 # Usar tu modelo de usuario personalizado

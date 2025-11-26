@@ -1,0 +1,47 @@
+{
+  "basic_stats": {
+    "total_predictions": 45,
+    "correct_predictions": 28,
+    "success_rate": 62.2,
+    "total_points": 1500,
+    "ranking": 245,
+    "join_date": "2024-01-15"
+  },
+  "performance_trend": [
+    {
+      "date": "2024-03-12",
+      "predictions": 5,
+      "correct": 3,
+      "success_rate": 60.0
+    },
+    {
+      "date": "2024-03-13",
+      "predictions": 7,
+      "correct": 5,
+      "success_rate": 71.4
+    }
+  ],
+  "sport_breakdown": [
+    {
+      "sport": "Football",
+      "predictions": 32,
+      "correct": 21,
+      "success_rate": 65.6
+    },
+    {
+      "sport": "Basketball",
+      "predictions": 13,
+      "correct": 7,
+      "success_rate": 53.8
+    }
+  ],
+  "achievements": [
+    {
+      "name": "Primera Sangre",
+      "description": "Realiza tu primera predicción",
+      "icon": "🎯",
+      "unlocked": true,
+      "unlocked_date": "2024-01-15"
+    }
+  ]
+}

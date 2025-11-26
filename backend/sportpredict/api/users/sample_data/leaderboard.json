@@ -1,0 +1,30 @@
+{
+  "leaderboard": [
+    {
+      "position": 1,
+      "username": "predictionking",
+      "puntos_totales": 3200,
+      "nivel_experto": 5,
+      "success_rate": 75.5,
+      "avatar_url": "/static/avatars/1.png"
+    },
+    {
+      "position": 2,
+      "username": "sportsmaster",
+      "puntos_totales": 2950,
+      "nivel_experto": 4,
+      "success_rate": 72.1,
+      "avatar_url": "/static/avatars/2.png"
+    },
+    {
+      "position": 3,
+      "username": "goalpredictor",
+      "puntos_totales": 2800,
+      "nivel_experto": 4,
+      "success_rate": 68.8,
+      "avatar_url": "/static/avatars/3.png"
+    }
+  ],
+  "timeframe": "all_time",
+  "last_updated": "2024-03-19T15:30:00Z"
+}

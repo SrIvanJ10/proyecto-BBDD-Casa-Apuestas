@@ -1,0 +1,67 @@
+{
+  "basic_stats": {
+    "total_predictions": 45,
+    "correct_predictions": 28,
+    "success_rate": 62.2,
+    "total_points": 1500,
+    "ranking": 245,
+    "join_date": "2024-01-15"
+  },
+  "performance_trend": [
+    {
+      "date": "2024-03-12",
+      "predictions": 3,
+      "correct": 2,
+      "success_rate": 66.7,
+      "points_earned": 45,
+      "avg_confidence": 0.72
+    }
+  ],
+  "sport_breakdown": [
+    {
+      "sport": "Football",
+      "total_predictions": 32,
+      "correct_predictions": 21,
+      "success_rate": 65.6,
+      "total_points": 1100,
+      "avg_points_per_prediction": 34.4,
+      "trend": "improving"
+    }
+  ],
+  "achievements": [
+    {
+      "name": "First Blood",
+      "description": "Realiza tu primera predicción",
+      "unlocked": true,
+      "unlocked_date": "2024-01-15",
+      "progress": 100,
+      "points_reward": 50
+    }
+  ],
+  "advanced_analytics": {
+    "consistency_score": 78.5,
+    "risk_profile": {
+      "profile": "moderate",
+      "score": 62.3,
+      "description": "Balanceas riesgo y recompensa de forma equilibrada"
+    },
+    "improvement_areas": [
+      {
+        "area": "Predicciones de empate",
+        "current_success": 32.5,
+        "platform_average": 41.2,
+        "recommendation": "Analiza más estadísticas de enfrentamientos anteriores"
+      }
+    ],
+    "comparison_with_peers": {
+      "similar_users_count": 150,
+      "user_percentile": 82,
+      "comparison_metrics": {
+        "success_rate": {
+          "user": 62.2,
+          "peers_avg": 54.8
+        }
+      }
+    }
+  }
+}
