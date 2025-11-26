@@ -14,6 +14,9 @@ urlpatterns = [
     # 📊 Analytics endpoints (para el futuro)
     path('analytics/', include('sportpredict.api.analytics.urls')),
     
+    # ⚙️ Admin endpoints
+    path('admin/', include('sportpredict.api.admin.urls')),  # Admin panel routes
+    
     # 🎯 Recommendations endpoints (para el futuro)
     path('recommendations/', include('sportpredict.api.recommendations.urls')),
     

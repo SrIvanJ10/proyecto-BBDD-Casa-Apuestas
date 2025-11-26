@@ -23,10 +23,18 @@ def generar_partidos():
     """Genera 20 partidos de prueba"""
     
     # Obtener deportes
+    # Obtener deportes
     try:
-        futbol = Deporte.objects.get(nombre__icontains='fútbol')
-    except Deporte.DoesNotExist:
-        futbol = Deporte.objects.create(nombre='Fútbol', activo=True)
+        # Intentar buscar por varias variantes
+        futbol = Deporte.objects.filter(nombre__in=['Futbol', 'Fútbol', 'futbol', 'fútbol']).first()
+        if not futbol:
+            futbol = Deporte.objects.create(nombre='Futbol', activo=True)
+            print("Creado deporte: Futbol")
+        else:
+            print(f"Usando deporte existente: {futbol.nombre} (ID: {futbol.id})")
+    except Exception as e:
+        print(f"Error buscando deporte Futbol: {e}")
+        return
     
     try:
         baloncesto = Deporte.objects.get(nombre__icontains='baloncesto')
