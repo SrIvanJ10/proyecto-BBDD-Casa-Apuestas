@@ -95,7 +95,7 @@ const MatchCard = ({ match, live = false, onPredictionSuccess }) => {
                     {isLive ? 'EN VIVO' : isFinished ? 'FINALIZADO' : success ? '✓ APOSTADO' : sportName}
                 </span>
                 <span className="match-date" style={{ fontSize: '0.9rem', color: '#718096' }}>
-                    {isLive ? <span style={{ color: '#e53e3e', fontWeight: 'bold' }}>Min 45'</span> : formatDate(match.fecha_hora || match.date)}
+                    {formatDate(match.fecha_hora || match.date)}
                 </span>
             </div>
 
