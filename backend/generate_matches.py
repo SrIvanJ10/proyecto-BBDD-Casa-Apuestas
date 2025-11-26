@@ -23,6 +23,7 @@ def generar_partidos():
     """Genera 20 partidos de prueba"""
     
     # Obtener deportes
+<<<<<<< HEAD
     # Obtener deportes
     try:
         # Intentar buscar por varias variantes
@@ -35,6 +36,12 @@ def generar_partidos():
     except Exception as e:
         print(f"Error buscando deporte Futbol: {e}")
         return
+=======
+    try:
+        futbol = Deporte.objects.get(nombre__icontains='fútbol')
+    except Deporte.DoesNotExist:
+        futbol = Deporte.objects.create(nombre='Fútbol', activo=True)
+>>>>>>> db693ad (v0.9)
     
     try:
         baloncesto = Deporte.objects.get(nombre__icontains='baloncesto')

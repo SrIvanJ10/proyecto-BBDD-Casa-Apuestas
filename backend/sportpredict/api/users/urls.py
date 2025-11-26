@@ -10,8 +10,11 @@ urlpatterns = [
     path('leaderboard/', views.leaderboard, name='user-leaderboard'),
     path('activity/', views.user_activity, name='user-activity'),
     path('upgrade-subscription/', views.upgrade_subscription, name='upgrade-subscription'),
+<<<<<<< HEAD
 =======
     path('leaderboard/', views.leaderboard, name='user-leaderboard'),
     path('activity/', views.user_activity, name='user-activity'),
 >>>>>>> d381094 (v0.14)
+=======
+>>>>>>> db693ad (v0.9)
 ]

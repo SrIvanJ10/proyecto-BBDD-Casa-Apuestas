@@ -297,6 +297,9 @@ def user_activity(request):
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> db693ad (v0.9)
 
 
 @api_view(['POST'])
@@ -362,5 +365,8 @@ def upgrade_subscription(request):
             {'error': f'Error actualizando suscripción: {str(e)}'},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+<<<<<<< HEAD
 =======
 >>>>>>> d381094 (v0.14)
+=======
+>>>>>>> db693ad (v0.9)
