@@ -193,3 +193,68 @@ def user_activity(request):
             {'error': f'Error cargando actividad: {str(e)}'},
             status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def upgrade_subscription(request):
+    """
+    Actualizar suscripción a Premium
+    POST /api/users/upgrade-subscription/
+    Costo: 500 puntos
+    """
+    try:
+        user = request.user
+        PREMIUM_COST = 500
+        
+        # Verificar que el usuario no sea ya Premium
+        if user.tipo_suscripcion == 'PREMIUM':
+            return Response({
+                'error': 'Ya tienes suscripción Premium',
+                'subscription_type': 'PREMIUM'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Verificar que tenga suficientes puntos
+        if user.puntos_totales < PREMIUM_COST:
+            return Response({
+                'error': 'Puntos insuficientes',
+                'message': f'Necesitas {PREMIUM_COST} puntos para actualizar a Premium',
+                'current_points': user.puntos_totales,
+                'required_points': PREMIUM_COST,
+                'missing_points': PREMIUM_COST - user.puntos_totales
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Descontar puntos y actualizar suscripción
+        user.puntos_totales -= PREMIUM_COST
+        user.tipo_suscripcion = 'PREMIUM'
+        user.save()
+        
+        # Actualizar sesión en Redis
+        session_manager.refresh_session(user)
+        
+        # Log en MongoDB
+        analytics_manager.registrar_actividad_usuario(
+            user_id=user.id,
+            action='subscription_upgraded',
+            metadata={
+                'cost': PREMIUM_COST,
+                'remaining_points': user.puntos_totales
+            }
+        )
+        
+        # Serializar respuesta
+        serializer = UsuarioSerializer(user)
+        
+        return Response({
+            'message': '¡Suscripción actualizada a Premium!',
+            'subscription_type': 'PREMIUM',
+            'points_spent': PREMIUM_COST,
+            'remaining_points': user.puntos_totales,
+            'user': serializer.data
+        }, status=status.HTTP_200_OK)
+        
+    except Exception as e:
+        return Response(
+            {'error': f'Error actualizando suscripción: {str(e)}'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
