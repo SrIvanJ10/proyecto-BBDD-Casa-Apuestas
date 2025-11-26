@@ -1,4 +1,7 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> d381094 (v0.14)
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -7,6 +10,7 @@ from django.db.models import Q, Count, Sum
 from django.http import JsonResponse
 from django.core.paginator import Paginator
 from django.core.cache import cache
+<<<<<<< HEAD
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 import re
@@ -29,6 +33,16 @@ def inicio(request):
 
 from django.views.decorators.http import require_http_methods
 >>>>>>> 4e7fe49 (crear rama backend)
+=======
+from django.views.decorators.http import require_http_methods
+from django.views.decorators.csrf import csrf_exempt
+import re
+import json
+
+from .models import Usuario, Deporte, Equipo, Partido, Prediccion
+from sportpredict.db.redis import session_manager
+# from sportpredict.db.mongo_utils import log_prediccion_mongodb  # COMENTADO - No se usa en las nuevas APIs
+>>>>>>> d381094 (v0.14)
 
 @require_http_methods(["GET"])
 def inicio(request):
@@ -236,6 +250,7 @@ def detalle_partido(request, partido_id):
     })
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 from django.views.decorators.csrf import csrf_exempt
 import json
@@ -344,6 +359,8 @@ def hacer_prediccion(request, partido_id):
         }, status=500)
 
 >>>>>>> 4e7fe49 (crear rama backend)
+=======
+>>>>>>> d381094 (v0.14)
 
 @login_required
 @require_http_methods(["GET"])
@@ -742,6 +759,9 @@ def recomendaciones(request):
         'mensaje': 'Sistema de recomendaciones en desarrollo (usando Neo4j)',
     })
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> d381094 (v0.14)
 
 @csrf_exempt
 def trigger_sync(request):
@@ -800,5 +820,8 @@ def trigger_sync(request):
         return JsonResponse({'success': True, 'message': 'Sync completed successfully'})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+<<<<<<< HEAD
 =======
 >>>>>>> 4e7fe49 (crear rama backend)
+=======
+>>>>>>> d381094 (v0.14)

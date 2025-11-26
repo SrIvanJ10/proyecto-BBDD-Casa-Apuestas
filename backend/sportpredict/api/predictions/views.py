@@ -30,6 +30,7 @@ def create_prediction(request):
     try:
         user = request.user
         
+<<<<<<< HEAD
         # Verificar límites de suscripción
         if not user.puede_apostar():
             predicciones_count = Prediccion.objects.filter(usuario=user).count()
@@ -50,6 +51,8 @@ def create_prediction(request):
                     'required_points': 500
                 }, status=status.HTTP_403_FORBIDDEN)
         
+=======
+>>>>>>> d381094 (v0.14)
         # Verificar rate limiting (máximo 10 predicciones por día)
         rate_limiter = RateLimiter(user.id)
         if not rate_limiter.can_make_prediction():

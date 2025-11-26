@@ -11,7 +11,10 @@ import Leaderboard from './pages/Leaderboard'
 import Profile from './pages/Profile'
 import Recommendations from './pages/Recommendations'
 import Friends from './pages/Friends'
+<<<<<<< HEAD
 import Admin from './pages/Admin'
+=======
+>>>>>>> d381094 (v0.14)
 import './App.css'
 
 function App() {
@@ -29,7 +32,10 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/recommendations" element={<Recommendations />} />
             <Route path="/friends" element={<Friends />} />
+<<<<<<< HEAD
             <Route path="/admin" element={<Admin />} />
+=======
+>>>>>>> d381094 (v0.14)
           </Routes>
           <Footer />
         </div>

@@ -460,6 +460,11 @@ try:
 except ImportError:
     from mongo_client import mongo_db, log_user_activity
 
+try:
+    from .mongo_client import mongo_db, log_user_activity
+except ImportError:
+    from mongo_client import mongo_db, log_user_activity
+
 @api_view(['GET'])
 def test_api(request):
     """
@@ -503,4 +508,7 @@ def test_api(request):
         'version': '1.0.0',
         'database_status': 'MongoDB integrado'  # ✅ Confirmación de la integración
     })
+<<<<<<< HEAD
+>>>>>>> d381094 (v0.14)
+=======
 >>>>>>> d381094 (v0.14)

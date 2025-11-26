@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { getProfile } from '../services/userService';
 import { getUserPredictions } from '../services/predictionService';
+<<<<<<< HEAD
 import { upgradeSubscription } from '../services/subscriptionService';
 import { updateUsername, updatePassword } from '../services/adminService';
 
@@ -24,6 +25,14 @@ const Profile = () => {
     const [passwordData, setPasswordData] = useState({ current: '', new: '' });
     const [passwordMessage, setPasswordMessage] = useState('');
     const [passwordError, setPasswordError] = useState('');
+=======
+
+const Profile = () => {
+    const { user } = useContext(AuthContext);
+    const [profileData, setProfileData] = useState(null);
+    const [predictions, setPredictions] = useState([]);
+    const [loading, setLoading] = useState(true);
+>>>>>>> d381094 (v0.14)
 
     useEffect(() => {
         const fetchProfile = async () => {
@@ -49,6 +58,7 @@ const Profile = () => {
         fetchProfile();
     }, [user]);
 
+<<<<<<< HEAD
     const handleUpgrade = async () => {
         setUpgrading(true);
         setUpgradeError('');
@@ -104,6 +114,8 @@ const Profile = () => {
         }
     };
 
+=======
+>>>>>>> d381094 (v0.14)
     if (!user) {
         return <div className="container" style={{ padding: '4rem', textAlign: 'center' }}>Por favor inicia sesión para ver tu perfil.</div>;
     }
@@ -113,7 +125,10 @@ const Profile = () => {
     }
 
     const displayUser = profileData || user;
+<<<<<<< HEAD
     const subscriptionType = displayUser.tipo_suscripcion || 'FREE';
+=======
+>>>>>>> d381094 (v0.14)
 
     return (
         <div className="container" style={{ paddingTop: '2rem', paddingBottom: '4rem' }}>
@@ -142,6 +157,7 @@ const Profile = () => {
                 </div>
             </div>
 
+<<<<<<< HEAD
             {/* Subscription Section */}
             <div className="card" style={{ marginBottom: '2rem', background: subscriptionType === 'PREMIUM' ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : '#f7fafc', color: subscriptionType === 'PREMIUM' ? 'white' : 'inherit' }}>
                 <h3 style={{ marginBottom: '1rem', color: subscriptionType === 'PREMIUM' ? 'white' : 'inherit' }}>
@@ -280,6 +296,8 @@ const Profile = () => {
                 )}
             </div>
 
+=======
+>>>>>>> d381094 (v0.14)
             <h3 style={{ marginBottom: '1.5rem' }}>Mis Apuestas Recientes</h3>
             {predictions.length > 0 ? (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
