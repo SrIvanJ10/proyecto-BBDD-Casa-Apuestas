@@ -24,6 +24,7 @@ const Navbar = () => {
           <Link to="/leaderboard">Ranking</Link>
           {user && <Link to="/recommendations">Recomendaciones</Link>}
           {user && <Link to="/friends">Amigos</Link>}
+          {user && user.is_staff && <Link to="/admin" style={{ color: '#f59e0b', fontWeight: 'bold' }}>⚙️ Admin</Link>}
         </nav>
         <div className="user-actions">
           {user ? (

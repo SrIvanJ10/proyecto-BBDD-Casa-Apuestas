@@ -107,6 +107,106 @@ def update_profile(request):
         )
 
 
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_username(request):
+    """
+    Actualizar nombre de usuario
+    PUT /api/users/update-username/
+    Body: {new_username}
+    """
+    try:
+        user = request.user
+        new_username = request.data.get('new_username', '').strip()
+        
+        if not new_username:
+            return Response({
+                'error': 'El nombre de usuario no puede estar vacío'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Verificar que el username no esté en uso
+        if Usuario.objects.filter(username=new_username).exclude(id=user.id).exists():
+            return Response({
+                'error': 'Este nombre de usuario ya está en uso'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Actualizar username
+        user.username = new_username
+        user.save()
+        
+        # Log en MongoDB
+        analytics_manager.registrar_actividad_usuario(
+            user_id=user.id,
+            action='username_updated',
+            metadata={'new_username': new_username}
+        )
+        
+        serializer = UsuarioSerializer(user)
+        
+        return Response({
+            'message': 'Nombre de usuario actualizado exitosamente',
+            'user': serializer.data
+        })
+        
+    except Exception as e:
+        return Response(
+            {'error': f'Error actualizando nombre de usuario: {str(e)}'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+
+@api_view(['PUT'])
+@permission_classes([IsAuthenticated])
+def update_password(request):
+    """
+    Actualizar contraseña
+    PUT /api/users/update-password/
+    Body: {current_password, new_password}
+    """
+    try:
+        user = request.user
+        current_password = request.data.get('current_password')
+        new_password = request.data.get('new_password')
+        
+        if not current_password or not new_password:
+            return Response({
+                'error': 'Se requiere la contraseña actual y la nueva contraseña'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Verificar contraseña actual
+        if not user.check_password(current_password):
+            return Response({
+                'error': 'La contraseña actual es incorrecta'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Validar nueva contraseña (mínimo 6 caracteres)
+        if len(new_password) < 6:
+            return Response({
+                'error': 'La nueva contraseña debe tener al menos 6 caracteres'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        
+        # Actualizar contraseña
+        user.set_password(new_password)
+        user.save()
+        
+        # Log en MongoDB
+        analytics_manager.registrar_actividad_usuario(
+            user_id=user.id,
+            action='password_updated',
+            metadata={}
+        )
+        
+        return Response({
+            'message': 'Contraseña actualizada exitosamente'
+        })
+        
+    except Exception as e:
+        return Response(
+            {'error': f'Error actualizando contraseña: {str(e)}'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+
+
 @api_view(['GET'])
 @permission_classes([AllowAny])
 def leaderboard(request):
