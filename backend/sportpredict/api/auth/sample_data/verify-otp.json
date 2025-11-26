@@ -1,0 +1,16 @@
+{
+  "email": "user@example.com",
+  "otp": "123456"
+}
+
+{
+  "message": "OTP verified successfully",
+  "user": {
+    "id": 123,
+    "email": "user@example.com",
+    "username": "johndoe",
+    "first_name": "John",
+    "last_name": "Doe"
+  },
+  "token": "jwt_token_here"
+}

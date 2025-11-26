@@ -1,0 +1,17 @@
+{
+  "email": "user@example.com",
+  "password": "securepassword123"
+}
+
+{
+  "user": {
+    "id": 123,
+    "email": "user@example.com",
+    "username": "johndoe",
+    "first_name": "John",
+    "last_name": "Doe",
+    "puntos_totales": 1500,
+    "nivel_experto": 3
+  },
+  "token": "jwt_token_here"
+}

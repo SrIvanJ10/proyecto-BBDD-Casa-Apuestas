@@ -1,0 +1,52 @@
+{
+  "recommendations": [
+    {
+      "match": {
+        "id": 1,
+        "equipo_local": {
+          "id": 10,
+          "nombre": "FC Barcelona",
+          "logo_url": "/static/logos/barcelona.png",
+          "sport": "Football"
+        },
+        "equipo_visitante": {
+          "id": 11,
+          "nombre": "Real Madrid",
+          "logo_url": "/static/logos/realmadrid.png",
+          "sport": "Football"
+        },
+        "fecha_hora": "2024-03-20T20:00:00Z",
+        "liga": "La Liga",
+        "estado": "upcoming"
+      },
+      "confidence_score": 0.85,
+      "reason": "Usuarios con patrones similares a los tuyos han tenido éxito con el Clásico",
+      "similar_users_count": 45,
+      "algorithm": "collaborative_filtering"
+    },
+    {
+      "match": {
+        "id": 4,
+        "equipo_local": {
+          "id": 14,
+          "nombre": "Golden State Warriors",
+          "logo_url": "/static/logos/warriors.png",
+          "sport": "Basketball"
+        },
+        "equipo_visitante": {
+          "id": 15,
+          "nombre": "LA Lakers",
+          "logo_url": "/static/logos/lakers.png",
+          "sport": "Basketball"
+        },
+        "fecha_hora": "2024-03-22T22:30:00Z",
+        "liga": "NBA",
+        "estado": "upcoming"
+      },
+      "confidence_score": 0.72,
+      "reason": "Basado en tu éxito reciente en predicciones de baloncesto",
+      "similar_users_count": 28,
+      "algorithm": "content_based"
+    }
+  ]
+}

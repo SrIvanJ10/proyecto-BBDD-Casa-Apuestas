@@ -1,0 +1,59 @@
+{
+  "predictions": [
+    {
+      "id": 1234,
+      "partido": {
+        "id": 1,
+        "equipo_local": {"nombre": "FC Barcelona"},
+        "equipo_visitante": {"nombre": "Real Madrid"},
+        "fecha_hora": "2024-03-20T20:00:00Z",
+        "liga": "La Liga",
+        "estado": "upcoming",
+        "resultado_final": null
+      },
+      "prediccion": "2-1",
+      "puntos_obtenidos": null,
+      "fecha_prediccion": "2024-03-19T15:30:00Z",
+      "correcta": null
+    },
+    {
+      "id": 1235,
+      "partido": {
+        "id": 2,
+        "equipo_local": {"nombre": "Manchester United"},
+        "equipo_visitante": {"nombre": "Liverpool"}, 
+        "fecha_hora": "2024-03-18T15:00:00Z",
+        "liga": "Premier League",
+        "estado": "finished",
+        "resultado_final": "1-2"
+      },
+      "prediccion": "1-1",
+      "puntos_obtenidos": 0,
+      "fecha_prediccion": "2024-03-17T12:00:00Z",
+      "correcta": false
+    },
+    {
+      "id": 1236,
+      "partido": {
+        "id": 3,
+        "equipo_local": {"nombre": "Bayern Munich"},
+        "equipo_visitante": {"nombre": "Borussia Dortmund"},
+        "fecha_hora": "2024-03-16T18:30:00Z", 
+        "liga": "Bundesliga",
+        "estado": "finished",
+        "resultado_final": "3-1"
+      },
+      "prediccion": "2-1",
+      "puntos_obtenidos": 25,
+      "fecha_prediccion": "2024-03-15T14:20:00Z",
+      "correcta": true
+    }
+  ],
+  "stats": {
+    "total_predictions": 45,
+    "correct_predictions": 28,
+    "success_rate": 62.2,
+    "total_points": 1500,
+    "current_streak": 3
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "matches": [
+    {
+      "id": 4,
+      "equipo_local": {
+        "id": 16,
+        "nombre": "Bayern Munich",
+        "logo_url": "/static/logos/bayern.png",
+        "sport": "Football"
+      },
+      "equipo_visitante": {
+        "id": 17,
+        "nombre": "Borussia Dortmund",
+        "logo_url": "/static/logos/dortmund.png",
+        "sport": "Football"
+      },
+      "fecha_hora": "2024-03-19T18:30:00Z",
+      "liga": "Bundesliga",
+      "estado": "live",
+      "user_prediction": null,
+      "prediction_count": 720
+    }
+  ]
+}
