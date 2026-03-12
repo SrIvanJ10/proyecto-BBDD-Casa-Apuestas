@@ -1,26 +1,10 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-import React, { useState, useEffect } from 'react'; // Force rebuild
-=======
 import React, { useState, useEffect } from 'react';
->>>>>>> 4e74b6e (v1.0)
-=======
-import React, { useState, useEffect } from 'react'; // Force rebuild
->>>>>>> b5c841f (v1.1)
 import {
     getAdminUsers, deleteAdminUser,
     getAdminSports, createAdminSport, deleteAdminSport,
     getAdminTeams, createAdminTeam, deleteAdminTeam,
-<<<<<<< HEAD
-<<<<<<< HEAD
-    getAdminMatches, createAdminMatch, updateAdminMatch, deleteAdminMatch
-=======
     getAdminMatches, createAdminMatch, updateAdminMatch, deleteAdminMatch,
     getAdminPredictions, deleteAdminPrediction
->>>>>>> 4e74b6e (v1.0)
-=======
-    getAdminMatches, createAdminMatch, updateAdminMatch, deleteAdminMatch
->>>>>>> b5c841f (v1.1)
 } from '../services/adminService';
 
 const Admin = () => {
@@ -34,13 +18,7 @@ const Admin = () => {
     const [sports, setSports] = useState([]);
     const [teams, setTeams] = useState([]);
     const [matches, setMatches] = useState([]);
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
     const [predictions, setPredictions] = useState([]);
->>>>>>> 4e74b6e (v1.0)
-=======
->>>>>>> b5c841f (v1.1)
 
     // Form states
     const [newSport, setNewSport] = useState('');
@@ -76,18 +54,10 @@ const Admin = () => {
                     const teamsForMatches = await getAdminTeams();
                     setTeams(teamsForMatches.teams || []);
                     break;
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
                 case 'predictions':
                     const predsData = await getAdminPredictions();
                     setPredictions(predsData.predictions || []);
                     break;
->>>>>>> 4e74b6e (v1.0)
-=======
-
->>>>>>> b5c841f (v1.1)
             }
         } catch (err) {
             setError(err.response?.data?.error || 'Error cargando datos');
@@ -186,10 +156,6 @@ const Admin = () => {
         }
     };
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
     const handleDeletePrediction = async (predId) => {
         if (!window.confirm('¿Eliminar esta predicción?')) return;
         try {
@@ -200,25 +166,13 @@ const Admin = () => {
             setError(err.response?.data?.error || 'Error');
         }
     };
->>>>>>> 4e74b6e (v1.0)
-=======
-
->>>>>>> b5c841f (v1.1)
 
     const tabs = [
         { id: 'users', label: '👥 Usuarios' },
         { id: 'sports', label: '⚽ Deportes' },
         { id: 'teams', label: '🏆 Equipos' },
-<<<<<<< HEAD
-<<<<<<< HEAD
-        { id: 'matches', label: '📅 Partidos' }
-=======
         { id: 'matches', label: '📅 Partidos' },
         { id: 'predictions', label: '🎯 Predicciones' }
->>>>>>> 4e74b6e (v1.0)
-=======
-        { id: 'matches', label: '📅 Partidos' }
->>>>>>> b5c841f (v1.1)
     ];
 
     return (
@@ -462,10 +416,6 @@ const Admin = () => {
                         </div>
                     )}
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-=======
                     {/* PREDICTIONS TAB */}
                     {activeTab === 'predictions' && (
                         <div className="card">
@@ -505,10 +455,6 @@ const Admin = () => {
                             </div>
                         </div>
                     )}
->>>>>>> 4e74b6e (v1.0)
-=======
-
->>>>>>> b5c841f (v1.1)
                 </>
             )}
         </div>

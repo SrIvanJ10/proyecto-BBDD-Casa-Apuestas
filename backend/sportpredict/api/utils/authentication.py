@@ -9,7 +9,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from sportpredict.models import Usuario
 
 
-SECRET_KEY = getattr(settings, 'SECRET_KEY', 'django-insecure-change-this-in-production')
+SECRET_KEY = settings.SECRET_KEY
 JWT_ALGORITHM = 'HS256'
 JWT_EXPIRATION_DAYS = 7
 

@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth import authenticate
+from django.conf import settings
 from django.db import IntegrityError
 
 from sportpredict.models import Usuario
@@ -77,12 +78,16 @@ def register(request):
         )
         
         # En producción, aquí enviarías el OTP por email
-        # Por ahora lo mostramos en la respuesta (solo desarrollo)
+        import logging
+        logger = logging.getLogger(__name__)
+        # OTP se envía por email en producción — solo loguear en DEBUG
+        if settings.DEBUG:
+            logger.debug('OTP para %s: %s', email, otp_code)
+
         return Response({
             'message': 'Usuario registrado. Verifica tu email para el código OTP.',
             'user_id': user.id,
             'email': email,
-            'otp_code': otp_code,  # SOLO PARA DESARROLLO - Eliminar en producción
             'otp_expires_in': otp_manager.otp_ttl
         }, status=status.HTTP_201_CREATED)
         
@@ -184,7 +189,7 @@ def login(request):
         # Verificar si el usuario está bloqueado por demasiados intentos fallidos
         if rate_limiter.is_locked(email_or_username):
             return Response(
-                {'error': 'Fallaste demasiado la contraseña demasiadas veces vuelve a intentarlo dentro de 1 hora'},
+                {'error': 'Has introducido la contraseña incorrecta demasiadas veces. Inténtalo de nuevo en 1 hora.'},
                 status=status.HTTP_403_FORBIDDEN
             )
         

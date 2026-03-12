@@ -24,14 +24,7 @@ const Navbar = () => {
           <Link to="/leaderboard">Ranking</Link>
           {user && <Link to="/recommendations">Recomendaciones</Link>}
           {user && <Link to="/friends">Amigos</Link>}
-<<<<<<< HEAD
-<<<<<<< HEAD
           {user && user.is_staff && <Link to="/admin" style={{ color: '#f59e0b', fontWeight: 'bold' }}>⚙️ Admin</Link>}
-=======
->>>>>>> d381094 (v0.14)
-=======
-          {user && user.is_staff && <Link to="/admin" style={{ color: '#f59e0b', fontWeight: 'bold' }}>⚙️ Admin</Link>}
->>>>>>> 4e74b6e (v1.0)
         </nav>
         <div className="user-actions">
           {user ? (

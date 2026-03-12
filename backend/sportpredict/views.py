@@ -1,48 +1,16 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> d381094 (v0.14)
-from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib.auth.decorators import login_required
-from django.contrib import messages
 from django.utils import timezone
 from django.db.models import Q, Count, Sum
 from django.http import JsonResponse
-from django.core.paginator import Paginator
-from django.core.cache import cache
-<<<<<<< HEAD
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
 import re
 import json
+import random
 
 from .models import Usuario, Deporte, Equipo, Partido, Prediccion
 from sportpredict.db.redis import session_manager
-# from sportpredict.db.mongo_utils import log_prediccion_mongodb  # COMENTADO - No se usa en las nuevas APIs
-=======
-def inicio(request):
-    """Página principal con partidos próximos y destacados"""
-    partidos_proximos = Partido.objects.filter(
-        estado='PENDIENTE',
-        fecha_hora__gt=timezone.now()
-    ).order_by('fecha_hora')[:10]
-    
-    # ... más código ...
-    
-    return render(request, 'predicciones/inicio.html', context)
 
-from django.views.decorators.http import require_http_methods
->>>>>>> 4e7fe49 (crear rama backend)
-=======
-from django.views.decorators.http import require_http_methods
-from django.views.decorators.csrf import csrf_exempt
-import re
-import json
-
-from .models import Usuario, Deporte, Equipo, Partido, Prediccion
-from sportpredict.db.redis import session_manager
-# from sportpredict.db.mongo_utils import log_prediccion_mongodb  # COMENTADO - No se usa en las nuevas APIs
->>>>>>> d381094 (v0.14)
 
 @require_http_methods(["GET"])
 def inicio(request):
@@ -51,15 +19,15 @@ def inicio(request):
         estado='PENDIENTE',
         fecha_hora__gt=timezone.now()
     ).select_related('equipo_local', 'equipo_visitante', 'equipo_local__deporte').order_by('fecha_hora')[:10]
-    
+
     partidos_en_vivo = Partido.objects.filter(
         estado='EN_JUEGO'
     ).select_related('equipo_local', 'equipo_visitante').order_by('fecha_hora')[:5]
-    
+
     top_usuarios = Usuario.objects.filter(
         puntos_totales__gt=0
     ).order_by('-puntos_totales')[:5]
-    
+
     return JsonResponse({
         'success': True,
         'data': {
@@ -98,6 +66,7 @@ def inicio(request):
         }
     })
 
+
 @require_http_methods(["GET"])
 def lista_partidos(request):
     """API: Lista completa de partidos con filtros"""
@@ -106,36 +75,34 @@ def lista_partidos(request):
     liga = request.GET.get('liga')
     page = int(request.GET.get('page', 1))
     page_size = 20
-    
+
     partidos = Partido.objects.all()
-    
-    # Aplicar filtros
+
     if deporte_id:
         partidos = partidos.filter(
-            Q(equipo_local__deporte_id=deporte_id) | 
+            Q(equipo_local__deporte_id=deporte_id) |
             Q(equipo_visitante__deporte_id=deporte_id)
         )
-    
+
     if estado:
         partidos = partidos.filter(estado=estado)
-    
+
     if liga:
         partidos = partidos.filter(liga__icontains=liga)
-    
+
     partidos = partidos.select_related(
         'equipo_local', 'equipo_visitante',
         'equipo_local__deporte', 'equipo_visitante__deporte'
     ).order_by('-fecha_hora')
-    
-    # Paginación manual
+
     total = partidos.count()
     start = (page - 1) * page_size
     end = start + page_size
     partidos_page = partidos[start:end]
-    
+
     deportes = Deporte.objects.filter(activo=True)
     ligas_disponibles = Partido.objects.values_list('liga', flat=True).distinct()
-    
+
     return JsonResponse({
         'success': True,
         'partidos': [
@@ -165,26 +132,23 @@ def lista_partidos(request):
         },
         'filtros': {
             'deportes': [{'id': d.id, 'nombre': d.nombre} for d in deportes],
-            'ligas': [liga for liga in ligas_disponibles if liga],
+            'ligas': [l for l in ligas_disponibles if l],
             'estados': [{'value': e[0], 'label': e[1]} for e in Partido.ESTADOS],
         }
     })
+
 
 @require_http_methods(["GET"])
 def detalle_partido(request, partido_id):
     """API: Detalle de un partido específico"""
     try:
         partido = Partido.objects.select_related(
-            'equipo_local', 'equipo_visitante', 
+            'equipo_local', 'equipo_visitante',
             'equipo_local__deporte'
         ).get(id=partido_id)
     except Partido.DoesNotExist:
-        return JsonResponse({
-            'success': False,
-            'error': 'Partido no encontrado'
-        }, status=404)
-    
-    # Predicción del usuario actual (si está logueado)
+        return JsonResponse({'success': False, 'error': 'Partido no encontrado'}, status=404)
+
     mi_prediccion = None
     if request.user.is_authenticated:
         try:
@@ -198,12 +162,10 @@ def detalle_partido(request, partido_id):
             }
         except Prediccion.DoesNotExist:
             pass
-    
-    # Estadísticas del partido
+
     total_predicciones = partido.total_predicciones()
     distribucion = partido.predicciones_usuarios()
-    
-    # Partidos relacionados
+
     partidos_relacionados = Partido.objects.filter(
         Q(equipo_local__deporte=partido.equipo_local.deporte) |
         Q(equipo_visitante__deporte=partido.equipo_local.deporte),
@@ -212,7 +174,7 @@ def detalle_partido(request, partido_id):
     ).exclude(id=partido.id).select_related(
         'equipo_local', 'equipo_visitante'
     ).order_by('fecha_hora')[:5]
-    
+
     return JsonResponse({
         'success': True,
         'partido': {
@@ -249,134 +211,71 @@ def detalle_partido(request, partido_id):
         'puede_predecir': partido.es_predecible() and request.user.is_authenticated,
     })
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-from django.views.decorators.csrf import csrf_exempt
-import json
 
 @login_required
-@csrf_exempt  # Solo si usas tokens JWT, si usas sesiones quítalo
+@csrf_exempt
 @require_http_methods(["POST"])
 def hacer_prediccion(request, partido_id):
-    """API: Crear o actualizar predicción"""
+    """API: Crear o actualizar predicción (legacy endpoint)"""
     try:
-        # Parsear JSON del body
         data = json.loads(request.body)
         prediccion_texto = data.get('prediccion', '').strip()
-        
+
         partido = Partido.objects.get(id=partido_id)
-        
-        # Validaciones
+
         if not partido.es_predecible():
-            return JsonResponse({
-                'success': False,
-                'error': 'No se pueden hacer predicciones para este partido'
-            }, status=400)
-        
-        # Rate limiting con Redis
-        hoy = timezone.now().strftime('%Y%m%d')
-        user_predictions_key = f"user_predictions:{request.user.id}:{hoy}"
-        current_predictions = redis_client.get(user_predictions_key)
-        current_predictions = int(current_predictions) if current_predictions else 0
-        
-        if current_predictions >= 10:
+            return JsonResponse({'success': False, 'error': 'No se pueden hacer predicciones para este partido'}, status=400)
+
+        if not session_manager.can_make_prediction(request.user.id):
             return JsonResponse({
                 'success': False,
                 'error': 'Límite diario alcanzado (10 predicciones máximo)',
-                'predicciones_hoy': current_predictions,
                 'limite': 10,
             }, status=429)
-        
-        # Validar formato
+
         if not re.match(r'^\d+-\d+$', prediccion_texto):
-            return JsonResponse({
-                'success': False,
-                'error': 'Formato inválido. Use: 2-1, 0-0, etc.'
-            }, status=400)
-        
-        # Verificar si ya existe
+            return JsonResponse({'success': False, 'error': 'Formato inválido. Use: 2-1, 0-0, etc.'}, status=400)
+
         try:
-            prediccion_existente = Prediccion.objects.get(
-                usuario=request.user, 
-                partido=partido
-            )
+            prediccion_existente = Prediccion.objects.get(usuario=request.user, partido=partido)
             prediccion_existente.prediccion = prediccion_texto
             prediccion_existente.fecha_prediccion = timezone.now()
             prediccion_existente.save()
-            action_type = 'updated'
-            prediccion = prediccion_existente
+            return JsonResponse({'success': True, 'message': 'Predicción actualizada', 'prediccion_id': prediccion_existente.id})
         except Prediccion.DoesNotExist:
-            prediccion = Prediccion.objects.create(
-                usuario=request.user,
-                partido=partido,
-                prediccion=prediccion_texto
-            )
-            action_type = 'created'
-            
-            # Incrementar contador Redis
-            redis_client.incr(user_predictions_key)
-            if current_predictions == 0:
-                redis_client.expire(user_predictions_key, 86400)
-        
-        # Log en MongoDB
-        try:
-            log_prediccion_mongodb(
-                user_id=request.user.id,
-                partido_id=partido.id,
-                prediccion=prediccion_texto,
-                action_type=action_type,
-                predictions_today=current_predictions + (0 if action_type == 'updated' else 1)
-            )
-        except Exception as e:
-            print(f"Error logging to MongoDB: {e}")
-        
-        return JsonResponse({
-            'success': True,
-            'message': f"Predicción {'actualizada' if action_type == 'updated' else 'guardada'} correctamente",
-            'prediccion': {
-                'id': prediccion.id,
-                'prediccion': prediccion.prediccion,
-                'fecha_prediccion': prediccion.fecha_prediccion.isoformat(),
-            },
-            'predicciones_hoy': current_predictions + (0 if action_type == 'updated' else 1),
-        })
-        
-    except Partido.DoesNotExist:
-        return JsonResponse({
-            'success': False,
-            'error': 'Partido no encontrado'
-        }, status=404)
-    except json.JSONDecodeError:
-        return JsonResponse({
-            'success': False,
-            'error': 'JSON inválido'
-        }, status=400)
-    except Exception as e:
-        return JsonResponse({
-            'success': False,
-            'error': str(e)
-        }, status=500)
+            pass
 
->>>>>>> 4e7fe49 (crear rama backend)
-=======
->>>>>>> d381094 (v0.14)
+        nueva_prediccion = Prediccion.objects.create(
+            usuario=request.user,
+            partido=partido,
+            prediccion=prediccion_texto
+        )
+        session_manager.increment_predictions(request.user.id)
+
+        return JsonResponse({'success': True, 'message': 'Predicción guardada', 'prediccion_id': nueva_prediccion.id}, status=201)
+
+    except Partido.DoesNotExist:
+        return JsonResponse({'success': False, 'error': 'Partido no encontrado'}, status=404)
+    except json.JSONDecodeError:
+        return JsonResponse({'success': False, 'error': 'JSON inválido'}, status=400)
+    except Exception as e:
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
+
 
 @login_required
 @require_http_methods(["GET"])
 def mis_predicciones(request):
     """API: Predicciones del usuario"""
     estado_filtro = request.GET.get('estado', 'todas')
-    
+
     predicciones = Prediccion.objects.filter(
         usuario=request.user
     ).select_related(
-        'partido', 
-        'partido__equipo_local', 
+        'partido',
+        'partido__equipo_local',
         'partido__equipo_visitante'
     ).order_by('-fecha_prediccion')
-    
-    # Aplicar filtros
+
     if estado_filtro == 'pendientes':
         predicciones = predicciones.filter(partido__estado='PENDIENTE')
     elif estado_filtro == 'finalizados':
@@ -384,27 +283,20 @@ def mis_predicciones(request):
     elif estado_filtro == 'acertadas':
         predicciones = predicciones.filter(correcta=True)
     elif estado_filtro == 'falladas':
-        predicciones = predicciones.filter(
-            partido__estado='FINALIZADO', 
-            correcta=False
-        )
-    
-    # Estadísticas del usuario
+        predicciones = predicciones.filter(partido__estado='FINALIZADO', correcta=False)
+
     total_predicciones = Prediccion.objects.filter(usuario=request.user).count()
-    predicciones_correctas = Prediccion.objects.filter(
-        usuario=request.user, 
-        correcta=True
-    ).count()
+    predicciones_correctas = Prediccion.objects.filter(usuario=request.user, correcta=True).count()
     puntos_totales = Prediccion.objects.filter(
         usuario=request.user
     ).aggregate(total=Sum('puntos_obtenidos'))['total'] or 0
-    
+
     hoy = timezone.now().date()
     predicciones_hoy = Prediccion.objects.filter(
         usuario=request.user,
         fecha_prediccion__date=hoy
     ).count()
-    
+
     return JsonResponse({
         'success': True,
         'predicciones': [
@@ -431,7 +323,7 @@ def mis_predicciones(request):
             'puntos_totales': puntos_totales,
             'predicciones_hoy': predicciones_hoy,
             'porcentaje_aciertos': round(
-                (predicciones_correctas / total_predicciones * 100) if total_predicciones > 0 else 0, 
+                (predicciones_correctas / total_predicciones * 100) if total_predicciones > 0 else 0,
                 1
             ),
         },
@@ -445,74 +337,51 @@ def mis_predicciones(request):
 def eliminar_prediccion(request, prediccion_id):
     """API: Eliminar una predicción"""
     try:
-        prediccion = Prediccion.objects.get(
-            id=prediccion_id, 
-            usuario=request.user
-        )
-        
+        prediccion = Prediccion.objects.get(id=prediccion_id, usuario=request.user)
+
         if not prediccion.es_editable():
-            return JsonResponse({
-                'success': False,
-                'error': 'No se puede eliminar esta predicción'
-            }, status=400)
-        
+            return JsonResponse({'success': False, 'error': 'No se puede eliminar esta predicción'}, status=400)
+
         partido_id = prediccion.partido.id
         prediccion.delete()
-        
-        return JsonResponse({
-            'success': True,
-            'message': 'Predicción eliminada correctamente',
-            'partido_id': partido_id,
-        })
-        
+
+        return JsonResponse({'success': True, 'message': 'Predicción eliminada correctamente', 'partido_id': partido_id})
+
     except Prediccion.DoesNotExist:
-        return JsonResponse({
-            'success': False,
-            'error': 'Predicción no encontrada'
-        }, status=404)
+        return JsonResponse({'success': False, 'error': 'Predicción no encontrada'}, status=404)
 
 
 @login_required
 @require_http_methods(["GET"])
 def dashboard(request):
     """API: Dashboard personal del usuario"""
-    # Estadísticas básicas
     estadisticas_usuario = {
         'total_predicciones': Prediccion.objects.filter(usuario=request.user).count(),
-        'predicciones_correctas': Prediccion.objects.filter(
-            usuario=request.user, correcta=True
-        ).count(),
+        'predicciones_correctas': Prediccion.objects.filter(usuario=request.user, correcta=True).count(),
         'puntos_totales': request.user.puntos_totales,
         'racha_actual': request.user.racha_actual,
         'mejor_racha': request.user.mejor_racha,
         'nivel_experto': request.user.nivel_experto,
     }
-    
-    # Predicciones recientes
+
     predicciones_recientes = Prediccion.objects.filter(
         usuario=request.user
     ).select_related(
         'partido', 'partido__equipo_local', 'partido__equipo_visitante'
     ).order_by('-fecha_prediccion')[:5]
-    
-    # Deportes favoritos
+
     deportes_favoritos = Prediccion.objects.filter(
         usuario=request.user
-    ).values_list(
-        'partido__equipo_local__deporte', 
-        flat=True
-    ).distinct()
-    
+    ).values_list('partido__equipo_local__deporte', flat=True).distinct()
+
     partidos_recomendados = Partido.objects.filter(
         equipo_local__deporte__in=deportes_favoritos,
         estado='PENDIENTE',
         fecha_hora__gt=timezone.now()
     ).exclude(
         prediccion__usuario=request.user
-    ).select_related(
-        'equipo_local', 'equipo_visitante'
-    ).order_by('fecha_hora')[:5]
-    
+    ).select_related('equipo_local', 'equipo_visitante').order_by('fecha_hora')[:5]
+
     return JsonResponse({
         'success': True,
         'estadisticas': estadisticas_usuario,
@@ -538,25 +407,27 @@ def dashboard(request):
         ],
     })
 
+
 @require_http_methods(["GET"])
 def leaderboard(request):
     """API: Tabla de clasificación global"""
     top_usuarios = Usuario.objects.filter(
         puntos_totales__gt=0
+    ).annotate(
+        num_predicciones=Count('prediccion')
     ).order_by('-puntos_totales')[:50]
-    
-    # Posición del usuario actual
+
     posicion_usuario = None
     if request.user.is_authenticated:
         usuarios_por_delante = Usuario.objects.filter(
             puntos_totales__gt=request.user.puntos_totales
         ).count()
         posicion_usuario = usuarios_por_delante + 1
-    
+
     total_usuarios = Usuario.objects.count()
     total_predicciones = Prediccion.objects.count()
     total_partidos = Partido.objects.count()
-    
+
     return JsonResponse({
         'success': True,
         'leaderboard': [
@@ -564,7 +435,7 @@ def leaderboard(request):
                 'posicion': idx + 1,
                 'username': u.username,
                 'puntos_totales': u.puntos_totales,
-                'total_predicciones': u.total_predicciones,
+                'total_predicciones': u.num_predicciones,
                 'racha_actual': u.racha_actual,
             } for idx, u in enumerate(top_usuarios)
         ],
@@ -576,13 +447,12 @@ def leaderboard(request):
         }
     })
 
+
 @require_http_methods(["GET"])
 def lista_deportes(request):
     """API: Lista de deportes"""
-    deportes = Deporte.objects.filter(activo=True).annotate(
-        num_equipos=Count('equipo'),
-    )
-    
+    deportes = Deporte.objects.filter(activo=True).annotate(num_equipos=Count('equipo'))
+
     return JsonResponse({
         'success': True,
         'deportes': [
@@ -596,20 +466,18 @@ def lista_deportes(request):
         ]
     })
 
+
 @require_http_methods(["GET"])
 def detalle_deporte(request, deporte_id):
     """API: Detalle de un deporte"""
     try:
         deporte = Deporte.objects.get(id=deporte_id)
     except Deporte.DoesNotExist:
-        return JsonResponse({
-            'success': False,
-            'error': 'Deporte no encontrado'
-        }, status=404)
-    
+        return JsonResponse({'success': False, 'error': 'Deporte no encontrado'}, status=404)
+
     equipos = Equipo.objects.filter(deporte=deporte, activo=True)
     partidos_proximos = deporte.partidos_proximos()[:10]
-    
+
     return JsonResponse({
         'success': True,
         'deporte': {
@@ -618,12 +486,7 @@ def detalle_deporte(request, deporte_id):
             'icono': deporte.icono,
             'descripcion': deporte.descripcion,
         },
-        'equipos': [
-            {
-                'id': e.id,
-                'nombre': e.nombre,
-            } for e in equipos
-        ],
+        'equipos': [{'id': e.id, 'nombre': e.nombre} for e in equipos],
         'partidos_proximos': [
             {
                 'id': p.id,
@@ -634,31 +497,30 @@ def detalle_deporte(request, deporte_id):
         ]
     })
 
+
 @require_http_methods(["GET"])
 def lista_equipos(request):
     """API: Lista de equipos"""
     deporte_id = request.GET.get('deporte')
-    
+
     equipos = Equipo.objects.filter(activo=True)
-    
+
     if deporte_id:
         equipos = equipos.filter(deporte_id=deporte_id)
-    
+
     equipos = equipos.select_related('deporte').order_by('deporte__nombre', 'nombre')
-    
+
     return JsonResponse({
         'success': True,
         'equipos': [
             {
                 'id': e.id,
                 'nombre': e.nombre,
-                'deporte': {
-                    'id': e.deporte.id,
-                    'nombre': e.deporte.nombre,
-                }
+                'deporte': {'id': e.deporte.id, 'nombre': e.deporte.nombre},
             } for e in equipos
         ]
     })
+
 
 @require_http_methods(["GET"])
 def detalle_equipo(request, equipo_id):
@@ -666,18 +528,15 @@ def detalle_equipo(request, equipo_id):
     try:
         equipo = Equipo.objects.select_related('deporte').get(id=equipo_id)
     except Equipo.DoesNotExist:
-        return JsonResponse({
-            'success': False,
-            'error': 'Equipo no encontrado'
-        }, status=404)
-    
+        return JsonResponse({'success': False, 'error': 'Equipo no encontrado'}, status=404)
+
     partidos_proximos = equipo.partidos_totales().filter(
         estado='PENDIENTE',
         fecha_hora__gt=timezone.now()
     ).select_related('equipo_local', 'equipo_visitante').order_by('fecha_hora')[:5]
-    
+
     estadisticas = equipo.estadisticas()
-    
+
     return JsonResponse({
         'success': True,
         'equipo': {
@@ -704,16 +563,14 @@ def estadisticas_globales(request):
     total_predicciones = Prediccion.objects.count()
     total_partidos = Partido.objects.count()
     partidos_finalizados = Partido.objects.filter(estado='FINALIZADO').count()
-    
-    # Deporte más popular
+
     deporte_popular = Deporte.objects.annotate(
-        num_predicciones=Count('equipo__partidos_local__prediccion') + 
+        num_predicciones=Count('equipo__partidos_local__prediccion') +
                          Count('equipo__partidos_visitante__prediccion')
     ).order_by('-num_predicciones').first()
-    
-    # Usuario top
+
     usuario_top = Usuario.objects.order_by('-puntos_totales').first()
-    
+
     return JsonResponse({
         'success': True,
         'estadisticas': {
@@ -737,14 +594,13 @@ def estadisticas_globales(request):
 @require_http_methods(["GET"])
 def recomendaciones(request):
     """API: Recomendaciones personalizadas"""
-    # Placeholder - será mejorado con Neo4j
     partidos_recomendados = Partido.objects.filter(
         estado='PENDIENTE',
         fecha_hora__gt=timezone.now()
     ).exclude(
         prediccion__usuario=request.user
     ).select_related('equipo_local', 'equipo_visitante').order_by('?')[:5]
-    
+
     return JsonResponse({
         'success': True,
         'recomendaciones': [
@@ -758,22 +614,17 @@ def recomendaciones(request):
         ],
         'mensaje': 'Sistema de recomendaciones en desarrollo (usando Neo4j)',
     })
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> d381094 (v0.14)
+
 
 @csrf_exempt
 def trigger_sync(request):
-    """Temporary view to trigger Neo4j sync"""
-    import random
-    from sportpredict.models import Usuario, Partido, Prediccion
+    """Vista para sincronizar manualmente todos los datos a Neo4j"""
     from sportpredict.db.neo4j_utils import Neo4jClient
-    
+
     try:
         client = Neo4jClient()
         if not client.verify_connectivity():
-            return JsonResponse({'error': 'Could not connect to Neo4j'}, status=500)
+            return JsonResponse({'error': 'No se puede conectar a Neo4j'}, status=500)
 
         # 1. Sync Users
         users = Usuario.objects.all()
@@ -784,20 +635,19 @@ def trigger_sync(request):
         matches = Partido.objects.all()
         for match in matches:
             client.create_match(
-                match.id, 
-                match.equipo_local.nombre, 
-                match.equipo_visitante.nombre, 
+                match.id,
+                match.equipo_local.nombre,
+                match.equipo_visitante.nombre,
                 match.equipo_local.deporte.nombre,
                 match.fecha_hora
             )
 
-        # 3. Sync Existing Predictions (Updates supported_team)
+        # 3. Sync Existing Predictions
         predictions = Prediccion.objects.all()
         for pred in predictions:
             client.create_prediction(pred.usuario.id, pred.partido.id, pred.prediccion)
 
-        # 4. Generate Synthetic Data (Bots) - Simplified for re-run
-        # We just want to ensure they exist and have predictions
+        # 4. Generar bots de ejemplo si no existen
         for i in range(1, 6):
             username = f"bot_expert_{i}"
             email = f"bot{i}@example.com"
@@ -817,11 +667,6 @@ def trigger_sync(request):
             client.create_user(user.id, user.username, user.email)
 
         client.close()
-        return JsonResponse({'success': True, 'message': 'Sync completed successfully'})
+        return JsonResponse({'success': True, 'message': 'Sincronización completada correctamente'})
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
-<<<<<<< HEAD
-=======
->>>>>>> 4e7fe49 (crear rama backend)
-=======
->>>>>>> d381094 (v0.14)
