@@ -6,6 +6,8 @@ from django.db.models import Q, Count, Sum
 from django.http import JsonResponse
 from django.core.paginator import Paginator
 from django.core.cache import cache
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 import re
 import json
 
