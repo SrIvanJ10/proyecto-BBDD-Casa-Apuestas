@@ -68,39 +68,10 @@ const MatchCard = ({ match, live = false, onPredictionSuccess }) => {
             }
 
         } catch (err) {
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> db693ad (v0.9)
-            // Manejar errores de suscripción con mensajes detallados
-            const errorData = err.response?.data;
-            let errorMsg = err.response?.data?.error || err.response?.data?.message || 'Error al realizar la apuesta';
-
-            // Si es un error de límite de suscripción, mostrar información adicional
-            if (errorData?.subscription_type === 'FREE' && errorData?.predictions_made !== undefined) {
-                errorMsg = `${errorMsg}\n\nApuestas realizadas: ${errorData.predictions_made}/${errorData.max_predictions}`;
-            } else if (errorData?.subscription_type === 'PREMIUM' && errorData?.current_points !== undefined) {
-                errorMsg = `${errorMsg}\n\nPuntos actuales: ${errorData.current_points}/${errorData.required_points}`;
-            }
-
-<<<<<<< HEAD
             setError(errorMsg);
 
             // Auto-cerrar error después de 8 segundos para dar tiempo a leer
             setTimeout(() => setError(''), 8000);
-=======
-            const errorMsg = err.response?.data?.error || err.response?.data?.message || 'Error al realizar la apuesta';
-            setError(errorMsg);
-
-            // Auto-cerrar error después de 5 segundos
-            setTimeout(() => setError(''), 5000);
->>>>>>> d381094 (v0.14)
-=======
-            setError(errorMsg);
-
-            // Auto-cerrar error después de 8 segundos para dar tiempo a leer
-            setTimeout(() => setError(''), 8000);
->>>>>>> db693ad (v0.9)
         } finally {
             setLoading(false);
         }
@@ -123,11 +94,7 @@ const MatchCard = ({ match, live = false, onPredictionSuccess }) => {
                     {isLive ? 'EN VIVO' : isFinished ? 'FINALIZADO' : success ? '✓ APOSTADO' : sportName}
                 </span>
                 <span className="match-date" style={{ fontSize: '0.9rem', color: '#718096' }}>
-<<<<<<< HEAD
-                    {formatDate(match.fecha_hora || match.date)}
-=======
                     {isLive ? <span style={{ color: '#e53e3e', fontWeight: 'bold' }}>Min 45'</span> : formatDate(match.fecha_hora || match.date)}
->>>>>>> d381094 (v0.14)
                 </span>
             </div>
 

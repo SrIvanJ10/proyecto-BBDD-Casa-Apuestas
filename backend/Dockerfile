@@ -15,7 +15,7 @@ RUN apk update && apk add --no-cache \
 COPY requirements.txt .
 
 # Actualizar pip y setuptools, e instalar wheel
-RUN pip install --no-cache-dir --upgrade pip setuptools wheel
+RUN pip install --no-cache-dir --upgrade pip wheel
 
 # Instalar PyJWT explícitamente primero (con sus dependencias criptográficas)
 RUN pip install --no-cache-dir PyJWT==2.8.0
@@ -36,4 +36,4 @@ RUN echo "Contenido del directorio /app:" && ls -la /app
 EXPOSE 8000
 
 # Comando para depuración antes de ejecutar manage.py
-CMD ["sh", "-c", "echo 'Listando directorio antes de ejecutar:' && ls -la && python manage.py runserver 0.0.0.0:8000"]
+CMD ["sh", "-c", "python manage.py migrate && python manage.py createsuperuser --noinput || true && python manage.py runserver 0.0.0.0:8000"]

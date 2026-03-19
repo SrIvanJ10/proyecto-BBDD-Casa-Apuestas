@@ -7,17 +7,8 @@ class UsuarioSerializer(serializers.ModelSerializer):
     class Meta:
         model = Usuario
         fields = ['id', 'username', 'email', 'first_name', 'last_name', 
-<<<<<<< HEAD
-<<<<<<< HEAD
                   'puntos_totales', 'nivel_experto', 'fecha_registro', 'avatar',
                   'tipo_suscripcion', 'is_staff', 'is_superuser']
-=======
-                  'puntos_totales', 'nivel_experto', 'fecha_registro', 'avatar']
->>>>>>> d381094 (v0.14)
-=======
-                  'puntos_totales', 'nivel_experto', 'fecha_registro', 'avatar',
-                  'tipo_suscripcion', 'is_staff', 'is_superuser']
->>>>>>> 4e74b6e (v1.0)
         read_only_fields = ['id', 'fecha_registro', 'puntos_totales', 'nivel_experto']
 
 
@@ -50,14 +41,7 @@ class DeporteSerializer(serializers.ModelSerializer):
 class EquipoSerializer(serializers.ModelSerializer):
     """Serializer para el modelo Equipo"""
     deporte = DeporteSerializer(read_only=True)
-<<<<<<< HEAD
-<<<<<<< HEAD
     deporte_nombre = serializers.CharField(source='deporte.nombre', read_only=True)
-=======
->>>>>>> d381094 (v0.14)
-=======
-    deporte_nombre = serializers.CharField(source='deporte.nombre', read_only=True)
->>>>>>> 4e74b6e (v1.0)
     deporte_id = serializers.PrimaryKeyRelatedField(
         queryset=Deporte.objects.all(), 
         source='deporte', 
@@ -66,15 +50,7 @@ class EquipoSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Equipo
-<<<<<<< HEAD
-<<<<<<< HEAD
         fields = ['id', 'nombre', 'deporte', 'deporte_nombre', 'deporte_id', 'logo_url', 'codigo']
-=======
-        fields = ['id', 'nombre', 'deporte', 'deporte_id', 'logo_url', 'codigo']
->>>>>>> d381094 (v0.14)
-=======
-        fields = ['id', 'nombre', 'deporte', 'deporte_nombre', 'deporte_id', 'logo_url', 'codigo']
->>>>>>> 4e74b6e (v1.0)
 
 
 class EquipoSimpleSerializer(serializers.ModelSerializer):
@@ -90,16 +66,8 @@ class PartidoSerializer(serializers.ModelSerializer):
     """Serializer para el modelo Partido"""
     equipo_local = EquipoSimpleSerializer(read_only=True)
     equipo_visitante = EquipoSimpleSerializer(read_only=True)
-<<<<<<< HEAD
-<<<<<<< HEAD
     equipo_local_nombre = serializers.CharField(source='equipo_local.nombre', read_only=True)
     equipo_visitante_nombre = serializers.CharField(source='equipo_visitante.nombre', read_only=True)
-=======
->>>>>>> d381094 (v0.14)
-=======
-    equipo_local_nombre = serializers.CharField(source='equipo_local.nombre', read_only=True)
-    equipo_visitante_nombre = serializers.CharField(source='equipo_visitante.nombre', read_only=True)
->>>>>>> 4e74b6e (v1.0)
     equipo_local_id = serializers.PrimaryKeyRelatedField(
         queryset=Equipo.objects.all(),
         source='equipo_local',
@@ -113,17 +81,8 @@ class PartidoSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Partido
-<<<<<<< HEAD
-<<<<<<< HEAD
         fields = ['id', 'equipo_local', 'equipo_visitante', 'equipo_local_nombre', 
                   'equipo_visitante_nombre', 'equipo_local_id', 
-=======
-        fields = ['id', 'equipo_local', 'equipo_visitante', 'equipo_local_id', 
->>>>>>> d381094 (v0.14)
-=======
-        fields = ['id', 'equipo_local', 'equipo_visitante', 'equipo_local_nombre', 
-                  'equipo_visitante_nombre', 'equipo_local_id', 
->>>>>>> 4e74b6e (v1.0)
                   'equipo_visitante_id', 'fecha_hora', 'resultado_final', 
                   'estado', 'liga', 'temporada',
                   'goles_local', 'goles_visitante',
@@ -154,14 +113,7 @@ class PartidoListSerializer(serializers.ModelSerializer):
 class PrediccionSerializer(serializers.ModelSerializer):
     """Serializer para el modelo Prediccion"""
     usuario = UsuarioSerializer(read_only=True)
-<<<<<<< HEAD
-<<<<<<< HEAD
     usuario_username = serializers.CharField(source='usuario.username', read_only=True)
-=======
->>>>>>> d381094 (v0.14)
-=======
-    usuario_username = serializers.CharField(source='usuario.username', read_only=True)
->>>>>>> 4e74b6e (v1.0)
     partido = PartidoListSerializer(read_only=True)
     partido_id = serializers.PrimaryKeyRelatedField(
         queryset=Partido.objects.all(),
@@ -171,15 +123,7 @@ class PrediccionSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Prediccion
-<<<<<<< HEAD
-<<<<<<< HEAD
         fields = ['id', 'usuario', 'usuario_username', 'partido', 'partido_id', 'prediccion', 
-=======
-        fields = ['id', 'usuario', 'partido', 'partido_id', 'prediccion', 
->>>>>>> d381094 (v0.14)
-=======
-        fields = ['id', 'usuario', 'usuario_username', 'partido', 'partido_id', 'prediccion', 
->>>>>>> 4e74b6e (v1.0)
                   'puntos_obtenidos', 'fecha_prediccion', 'correcta',
                   'pred_goles_local', 'pred_goles_visitante',
                   'pred_amarillas_local', 'pred_amarillas_visitante',

@@ -30,35 +30,6 @@ def create_prediction(request):
     try:
         user = request.user
         
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> db693ad (v0.9)
-        # Verificar límites de suscripción
-        if not user.puede_apostar():
-            predicciones_count = Prediccion.objects.filter(usuario=user).count()
-            if user.tipo_suscripcion == 'FREE':
-                return Response({
-                    'error': 'Límite de apuestas alcanzado',
-                    'message': 'Has alcanzado el límite de 5 apuestas del plan gratuito. Actualiza a Premium para apuestas ilimitadas.',
-                    'subscription_type': 'FREE',
-                    'predictions_made': predicciones_count,
-                    'max_predictions': 5
-                }, status=status.HTTP_403_FORBIDDEN)
-            else:  # PREMIUM
-                return Response({
-                    'error': 'Puntos insuficientes',
-                    'message': 'Necesitas al menos 500 puntos para usar el plan Premium.',
-                    'subscription_type': 'PREMIUM',
-                    'current_points': user.puntos_totales,
-                    'required_points': 500
-                }, status=status.HTTP_403_FORBIDDEN)
-        
-<<<<<<< HEAD
-=======
->>>>>>> d381094 (v0.14)
-=======
->>>>>>> db693ad (v0.9)
         # Verificar rate limiting (máximo 10 predicciones por día)
         rate_limiter = RateLimiter(user.id)
         if not rate_limiter.can_make_prediction():
