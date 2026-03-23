@@ -18,9 +18,23 @@ class Usuario(AbstractUser):
         choices=TIPO_SUSCRIPCION_CHOICES,
         default='FREE'
     )
-    
+    racha_actual = models.IntegerField(default=0)
+    mejor_racha = models.IntegerField(default=0)
+
     def __str__(self):
         return self.username
+
+    @property
+    def total_predicciones(self):
+        return self.prediccion_set.count()
+
+    @property
+    def predicciones_correctas(self):
+        return self.prediccion_set.filter(correcta=True).count()
+
+    def porcentaje_aciertos(self):
+        total = self.total_predicciones
+        return round((self.predicciones_correctas / total * 100), 2) if total > 0 else 0
     
     def puede_apostar(self):
         """
@@ -42,10 +56,21 @@ class Usuario(AbstractUser):
 class Deporte(models.Model):
     """Deportes disponibles en la plataforma"""
     nombre = models.CharField(max_length=50)
-    activo = models.BooleanField(default=True) #por si quieres activar el deporte
+    activo = models.BooleanField(default=True)
+    icono = models.CharField(max_length=50, blank=True, default='🏆')
+    descripcion = models.TextField(blank=True)
 
     def __str__(self):
         return self.nombre
+
+    def partidos_proximos(self):
+        from django.db.models import Q
+        from django.utils import timezone
+        return Partido.objects.filter(
+            Q(equipo_local__deporte=self) | Q(equipo_visitante__deporte=self),
+            estado='PENDIENTE',
+            fecha_hora__gt=timezone.now()
+        ).order_by('fecha_hora')
 
 
 class Equipo(models.Model):
@@ -54,9 +79,34 @@ class Equipo(models.Model):
     deporte = models.ForeignKey(Deporte, on_delete=models.CASCADE)
     logo_url = models.URLField(blank=True, null=True)
     codigo = models.CharField(max_length=10, unique=True)  # Ej: "BAR", "RMA"
+    activo = models.BooleanField(default=True)
 
     def __str__(self):
         return self.nombre
+
+    def partidos_totales(self):
+        from django.db.models import Q
+        return Partido.objects.filter(
+            Q(equipo_local=self) | Q(equipo_visitante=self)
+        )
+
+    def estadisticas(self):
+        partidos = self.partidos_totales().filter(estado='FINALIZADO')
+        victorias = partidos.filter(
+            models.Q(equipo_local=self, goles_local__gt=models.F('goles_visitante')) |
+            models.Q(equipo_visitante=self, goles_visitante__gt=models.F('goles_local'))
+        ).count()
+        derrotas = partidos.filter(
+            models.Q(equipo_local=self, goles_local__lt=models.F('goles_visitante')) |
+            models.Q(equipo_visitante=self, goles_visitante__lt=models.F('goles_local'))
+        ).count()
+        empates = partidos.filter(goles_local=models.F('goles_visitante')).count()
+        return {
+            'jugados': partidos.count(),
+            'victorias': victorias,
+            'derrotas': derrotas,
+            'empates': empates,
+        }
 
 class Partido(models.Model):
     """Partidos disponibles para predecir"""
@@ -97,6 +147,43 @@ class Partido(models.Model):
 
     def __str__(self):
         return f"{self.equipo_local} vs {self.equipo_visitante}"
+
+    @property
+    def resultado_local(self):
+        return self.goles_local
+
+    @property
+    def resultado_visitante(self):
+        return self.goles_visitante
+
+    def es_predecible(self):
+        from django.utils import timezone
+        return self.estado == 'PENDIENTE' and self.fecha_hora > timezone.now()
+
+    def total_predicciones(self):
+        return self.prediccion_set.count()
+
+    def predicciones_usuarios(self):
+        predicciones = self.prediccion_set.all()
+        total = predicciones.count()
+        if total == 0:
+            return {'local': 0, 'empate': 0, 'visitante': 0, 'total': 0}
+        local = predicciones.filter(
+            pred_goles_local__gt=models.F('pred_goles_visitante')
+        ).count()
+        visitante = predicciones.filter(
+            pred_goles_visitante__gt=models.F('pred_goles_local')
+        ).count()
+        empate = predicciones.filter(
+            pred_goles_local=models.F('pred_goles_visitante'),
+            pred_goles_local__isnull=False
+        ).count()
+        return {
+            'local': round(local / total * 100, 1),
+            'empate': round(empate / total * 100, 1),
+            'visitante': round(visitante / total * 100, 1),
+            'total': total,
+        }
 
 class Prediccion(models.Model):
     """Predicciones avanzadas de los usuarios"""

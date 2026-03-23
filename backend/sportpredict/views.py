@@ -15,15 +15,15 @@ def inicio(request):
         estado='PENDIENTE',
         fecha_hora__gt=timezone.now()
     ).select_related('equipo_local', 'equipo_visitante', 'equipo_local__deporte').order_by('fecha_hora')[:10]
-    
+
     partidos_en_vivo = Partido.objects.filter(
         estado='EN_JUEGO'
     ).select_related('equipo_local', 'equipo_visitante').order_by('fecha_hora')[:5]
-    
+
     top_usuarios = Usuario.objects.filter(
         puntos_totales__gt=0
     ).order_by('-puntos_totales')[:5]
-    
+
     return JsonResponse({
         'success': True,
         'data': {
@@ -62,6 +62,7 @@ def inicio(request):
         }
     })
 
+
 @require_http_methods(["GET"])
 def lista_partidos(request):
     """API: Lista completa de partidos con filtros"""
@@ -70,36 +71,34 @@ def lista_partidos(request):
     liga = request.GET.get('liga')
     page = int(request.GET.get('page', 1))
     page_size = 20
-    
+
     partidos = Partido.objects.all()
-    
-    # Aplicar filtros
+
     if deporte_id:
         partidos = partidos.filter(
-            Q(equipo_local__deporte_id=deporte_id) | 
+            Q(equipo_local__deporte_id=deporte_id) |
             Q(equipo_visitante__deporte_id=deporte_id)
         )
-    
+
     if estado:
         partidos = partidos.filter(estado=estado)
-    
+
     if liga:
         partidos = partidos.filter(liga__icontains=liga)
-    
+
     partidos = partidos.select_related(
         'equipo_local', 'equipo_visitante',
         'equipo_local__deporte', 'equipo_visitante__deporte'
     ).order_by('-fecha_hora')
-    
-    # Paginación manual
+
     total = partidos.count()
     start = (page - 1) * page_size
     end = start + page_size
     partidos_page = partidos[start:end]
-    
+
     deportes = Deporte.objects.filter(activo=True)
     ligas_disponibles = Partido.objects.values_list('liga', flat=True).distinct()
-    
+
     return JsonResponse({
         'success': True,
         'partidos': [
@@ -129,26 +128,23 @@ def lista_partidos(request):
         },
         'filtros': {
             'deportes': [{'id': d.id, 'nombre': d.nombre} for d in deportes],
-            'ligas': [liga for liga in ligas_disponibles if liga],
+            'ligas': [l for l in ligas_disponibles if l],
             'estados': [{'value': e[0], 'label': e[1]} for e in Partido.ESTADOS],
         }
     })
+
 
 @require_http_methods(["GET"])
 def detalle_partido(request, partido_id):
     """API: Detalle de un partido específico"""
     try:
         partido = Partido.objects.select_related(
-            'equipo_local', 'equipo_visitante', 
+            'equipo_local', 'equipo_visitante',
             'equipo_local__deporte'
         ).get(id=partido_id)
     except Partido.DoesNotExist:
-        return JsonResponse({
-            'success': False,
-            'error': 'Partido no encontrado'
-        }, status=404)
-    
-    # Predicción del usuario actual (si está logueado)
+        return JsonResponse({'success': False, 'error': 'Partido no encontrado'}, status=404)
+
     mi_prediccion = None
     if request.user.is_authenticated:
         try:
@@ -162,12 +158,10 @@ def detalle_partido(request, partido_id):
             }
         except Prediccion.DoesNotExist:
             pass
-    
-    # Estadísticas del partido
+
     total_predicciones = partido.total_predicciones()
     distribucion = partido.predicciones_usuarios()
-    
-    # Partidos relacionados
+
     partidos_relacionados = Partido.objects.filter(
         Q(equipo_local__deporte=partido.equipo_local.deporte) |
         Q(equipo_visitante__deporte=partido.equipo_local.deporte),
@@ -176,7 +170,7 @@ def detalle_partido(request, partido_id):
     ).exclude(id=partido.id).select_related(
         'equipo_local', 'equipo_visitante'
     ).order_by('fecha_hora')[:5]
-    
+
     return JsonResponse({
         'success': True,
         'partido': {
@@ -219,16 +213,15 @@ def detalle_partido(request, partido_id):
 def mis_predicciones(request):
     """API: Predicciones del usuario"""
     estado_filtro = request.GET.get('estado', 'todas')
-    
+
     predicciones = Prediccion.objects.filter(
         usuario=request.user
     ).select_related(
-        'partido', 
-        'partido__equipo_local', 
+        'partido',
+        'partido__equipo_local',
         'partido__equipo_visitante'
     ).order_by('-fecha_prediccion')
-    
-    # Aplicar filtros
+
     if estado_filtro == 'pendientes':
         predicciones = predicciones.filter(partido__estado='PENDIENTE')
     elif estado_filtro == 'finalizados':
@@ -236,27 +229,20 @@ def mis_predicciones(request):
     elif estado_filtro == 'acertadas':
         predicciones = predicciones.filter(correcta=True)
     elif estado_filtro == 'falladas':
-        predicciones = predicciones.filter(
-            partido__estado='FINALIZADO', 
-            correcta=False
-        )
-    
-    # Estadísticas del usuario
+        predicciones = predicciones.filter(partido__estado='FINALIZADO', correcta=False)
+
     total_predicciones = Prediccion.objects.filter(usuario=request.user).count()
-    predicciones_correctas = Prediccion.objects.filter(
-        usuario=request.user, 
-        correcta=True
-    ).count()
+    predicciones_correctas = Prediccion.objects.filter(usuario=request.user, correcta=True).count()
     puntos_totales = Prediccion.objects.filter(
         usuario=request.user
     ).aggregate(total=Sum('puntos_obtenidos'))['total'] or 0
-    
+
     hoy = timezone.now().date()
     predicciones_hoy = Prediccion.objects.filter(
         usuario=request.user,
         fecha_prediccion__date=hoy
     ).count()
-    
+
     return JsonResponse({
         'success': True,
         'predicciones': [
@@ -283,7 +269,7 @@ def mis_predicciones(request):
             'puntos_totales': puntos_totales,
             'predicciones_hoy': predicciones_hoy,
             'porcentaje_aciertos': round(
-                (predicciones_correctas / total_predicciones * 100) if total_predicciones > 0 else 0, 
+                (predicciones_correctas / total_predicciones * 100) if total_predicciones > 0 else 0,
                 1
             ),
         },
@@ -297,74 +283,51 @@ def mis_predicciones(request):
 def eliminar_prediccion(request, prediccion_id):
     """API: Eliminar una predicción"""
     try:
-        prediccion = Prediccion.objects.get(
-            id=prediccion_id, 
-            usuario=request.user
-        )
-        
+        prediccion = Prediccion.objects.get(id=prediccion_id, usuario=request.user)
+
         if not prediccion.es_editable():
-            return JsonResponse({
-                'success': False,
-                'error': 'No se puede eliminar esta predicción'
-            }, status=400)
-        
+            return JsonResponse({'success': False, 'error': 'No se puede eliminar esta predicción'}, status=400)
+
         partido_id = prediccion.partido.id
         prediccion.delete()
-        
-        return JsonResponse({
-            'success': True,
-            'message': 'Predicción eliminada correctamente',
-            'partido_id': partido_id,
-        })
-        
+
+        return JsonResponse({'success': True, 'message': 'Predicción eliminada correctamente', 'partido_id': partido_id})
+
     except Prediccion.DoesNotExist:
-        return JsonResponse({
-            'success': False,
-            'error': 'Predicción no encontrada'
-        }, status=404)
+        return JsonResponse({'success': False, 'error': 'Predicción no encontrada'}, status=404)
 
 
 @login_required
 @require_http_methods(["GET"])
 def dashboard(request):
     """API: Dashboard personal del usuario"""
-    # Estadísticas básicas
     estadisticas_usuario = {
         'total_predicciones': Prediccion.objects.filter(usuario=request.user).count(),
-        'predicciones_correctas': Prediccion.objects.filter(
-            usuario=request.user, correcta=True
-        ).count(),
+        'predicciones_correctas': Prediccion.objects.filter(usuario=request.user, correcta=True).count(),
         'puntos_totales': request.user.puntos_totales,
         'racha_actual': request.user.racha_actual,
         'mejor_racha': request.user.mejor_racha,
         'nivel_experto': request.user.nivel_experto,
     }
-    
-    # Predicciones recientes
+
     predicciones_recientes = Prediccion.objects.filter(
         usuario=request.user
     ).select_related(
         'partido', 'partido__equipo_local', 'partido__equipo_visitante'
     ).order_by('-fecha_prediccion')[:5]
-    
-    # Deportes favoritos
+
     deportes_favoritos = Prediccion.objects.filter(
         usuario=request.user
-    ).values_list(
-        'partido__equipo_local__deporte', 
-        flat=True
-    ).distinct()
-    
+    ).values_list('partido__equipo_local__deporte', flat=True).distinct()
+
     partidos_recomendados = Partido.objects.filter(
         equipo_local__deporte__in=deportes_favoritos,
         estado='PENDIENTE',
         fecha_hora__gt=timezone.now()
     ).exclude(
         prediccion__usuario=request.user
-    ).select_related(
-        'equipo_local', 'equipo_visitante'
-    ).order_by('fecha_hora')[:5]
-    
+    ).select_related('equipo_local', 'equipo_visitante').order_by('fecha_hora')[:5]
+
     return JsonResponse({
         'success': True,
         'estadisticas': estadisticas_usuario,
@@ -390,25 +353,27 @@ def dashboard(request):
         ],
     })
 
+
 @require_http_methods(["GET"])
 def leaderboard(request):
     """API: Tabla de clasificación global"""
     top_usuarios = Usuario.objects.filter(
         puntos_totales__gt=0
+    ).annotate(
+        num_predicciones=Count('prediccion')
     ).order_by('-puntos_totales')[:50]
-    
-    # Posición del usuario actual
+
     posicion_usuario = None
     if request.user.is_authenticated:
         usuarios_por_delante = Usuario.objects.filter(
             puntos_totales__gt=request.user.puntos_totales
         ).count()
         posicion_usuario = usuarios_por_delante + 1
-    
+
     total_usuarios = Usuario.objects.count()
     total_predicciones = Prediccion.objects.count()
     total_partidos = Partido.objects.count()
-    
+
     return JsonResponse({
         'success': True,
         'leaderboard': [
@@ -416,7 +381,7 @@ def leaderboard(request):
                 'posicion': idx + 1,
                 'username': u.username,
                 'puntos_totales': u.puntos_totales,
-                'total_predicciones': u.total_predicciones,
+                'total_predicciones': u.num_predicciones,
                 'racha_actual': u.racha_actual,
             } for idx, u in enumerate(top_usuarios)
         ],
@@ -428,13 +393,12 @@ def leaderboard(request):
         }
     })
 
+
 @require_http_methods(["GET"])
 def lista_deportes(request):
     """API: Lista de deportes"""
-    deportes = Deporte.objects.filter(activo=True).annotate(
-        num_equipos=Count('equipo'),
-    )
-    
+    deportes = Deporte.objects.filter(activo=True).annotate(num_equipos=Count('equipo'))
+
     return JsonResponse({
         'success': True,
         'deportes': [
@@ -448,20 +412,18 @@ def lista_deportes(request):
         ]
     })
 
+
 @require_http_methods(["GET"])
 def detalle_deporte(request, deporte_id):
     """API: Detalle de un deporte"""
     try:
         deporte = Deporte.objects.get(id=deporte_id)
     except Deporte.DoesNotExist:
-        return JsonResponse({
-            'success': False,
-            'error': 'Deporte no encontrado'
-        }, status=404)
-    
+        return JsonResponse({'success': False, 'error': 'Deporte no encontrado'}, status=404)
+
     equipos = Equipo.objects.filter(deporte=deporte, activo=True)
     partidos_proximos = deporte.partidos_proximos()[:10]
-    
+
     return JsonResponse({
         'success': True,
         'deporte': {
@@ -470,12 +432,7 @@ def detalle_deporte(request, deporte_id):
             'icono': deporte.icono,
             'descripcion': deporte.descripcion,
         },
-        'equipos': [
-            {
-                'id': e.id,
-                'nombre': e.nombre,
-            } for e in equipos
-        ],
+        'equipos': [{'id': e.id, 'nombre': e.nombre} for e in equipos],
         'partidos_proximos': [
             {
                 'id': p.id,
@@ -486,31 +443,30 @@ def detalle_deporte(request, deporte_id):
         ]
     })
 
+
 @require_http_methods(["GET"])
 def lista_equipos(request):
     """API: Lista de equipos"""
     deporte_id = request.GET.get('deporte')
-    
+
     equipos = Equipo.objects.filter(activo=True)
-    
+
     if deporte_id:
         equipos = equipos.filter(deporte_id=deporte_id)
-    
+
     equipos = equipos.select_related('deporte').order_by('deporte__nombre', 'nombre')
-    
+
     return JsonResponse({
         'success': True,
         'equipos': [
             {
                 'id': e.id,
                 'nombre': e.nombre,
-                'deporte': {
-                    'id': e.deporte.id,
-                    'nombre': e.deporte.nombre,
-                }
+                'deporte': {'id': e.deporte.id, 'nombre': e.deporte.nombre},
             } for e in equipos
         ]
     })
+
 
 @require_http_methods(["GET"])
 def detalle_equipo(request, equipo_id):
@@ -518,18 +474,15 @@ def detalle_equipo(request, equipo_id):
     try:
         equipo = Equipo.objects.select_related('deporte').get(id=equipo_id)
     except Equipo.DoesNotExist:
-        return JsonResponse({
-            'success': False,
-            'error': 'Equipo no encontrado'
-        }, status=404)
-    
+        return JsonResponse({'success': False, 'error': 'Equipo no encontrado'}, status=404)
+
     partidos_proximos = equipo.partidos_totales().filter(
         estado='PENDIENTE',
         fecha_hora__gt=timezone.now()
     ).select_related('equipo_local', 'equipo_visitante').order_by('fecha_hora')[:5]
-    
+
     estadisticas = equipo.estadisticas()
-    
+
     return JsonResponse({
         'success': True,
         'equipo': {
@@ -556,16 +509,14 @@ def estadisticas_globales(request):
     total_predicciones = Prediccion.objects.count()
     total_partidos = Partido.objects.count()
     partidos_finalizados = Partido.objects.filter(estado='FINALIZADO').count()
-    
-    # Deporte más popular
+
     deporte_popular = Deporte.objects.annotate(
-        num_predicciones=Count('equipo__partidos_local__prediccion') + 
+        num_predicciones=Count('equipo__partidos_local__prediccion') +
                          Count('equipo__partidos_visitante__prediccion')
     ).order_by('-num_predicciones').first()
-    
-    # Usuario top
+
     usuario_top = Usuario.objects.order_by('-puntos_totales').first()
-    
+
     return JsonResponse({
         'success': True,
         'estadisticas': {
@@ -589,14 +540,13 @@ def estadisticas_globales(request):
 @require_http_methods(["GET"])
 def recomendaciones(request):
     """API: Recomendaciones personalizadas"""
-    # Placeholder - será mejorado con Neo4j
     partidos_recomendados = Partido.objects.filter(
         estado='PENDIENTE',
         fecha_hora__gt=timezone.now()
     ).exclude(
         prediccion__usuario=request.user
     ).select_related('equipo_local', 'equipo_visitante').order_by('?')[:5]
-    
+
     return JsonResponse({
         'success': True,
         'recomendaciones': [

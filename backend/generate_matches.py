@@ -23,7 +23,6 @@ def generar_partidos():
     """Genera 20 partidos de prueba"""
     
     # Obtener deportes
-    # Obtener deportes
     try:
         # Intentar buscar por varias variantes
         futbol = Deporte.objects.filter(nombre__in=['Futbol', 'Fútbol', 'futbol', 'fútbol']).first()

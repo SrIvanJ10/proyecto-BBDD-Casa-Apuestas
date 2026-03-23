@@ -13,14 +13,12 @@ export const AuthProvider = ({ children }) => {
             const token = localStorage.getItem('token');
             if (token) {
                 try {
-                    // Asumimos que hay un endpoint para obtener el perfil del usuario
-                    // Si no existe, decodificamos el token o simplemente seteamos true
-                    // Por ahora intentamos obtener el perfil si existe el endpoint
-                    // const response = await api.get('/users/profile/');
-                    // setUser(response.data);
-                    setUser({ token }); // Placeholder hasta tener endpoint de perfil
+                    const response = await api.get('/users/profile/');
+                    setUser(response.data);
                 } catch (error) {
-                    localStorage.removeItem('token');
+                    if (error.response?.status === 401) {
+                        localStorage.removeItem('token');
+                    }
                     setUser(null);
                 }
             }
@@ -46,7 +44,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     return (
-        <AuthContext.Provider value={{ user, login, logout, loading }}>
+        <AuthContext.Provider value={{ user, setUser, login, logout, loading }}>
             {children}
         </AuthContext.Provider>
     );

@@ -17,13 +17,7 @@ COPY requirements.txt .
 # Actualizar pip y setuptools, e instalar wheel
 RUN pip install --no-cache-dir --upgrade pip wheel
 
-# Instalar PyJWT explícitamente primero (con sus dependencias criptográficas)
-RUN pip install --no-cache-dir PyJWT==2.8.0
-
-# Verificar que PyJWT se instaló correctamente
-RUN python -c "import jwt; print('PyJWT installed successfully:', jwt.__version__)"
-
-# Instalar el resto de dependencias
+# Instalar dependencias Python
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copiar todo el proyecto

@@ -4,14 +4,14 @@ from . import views
 urlpatterns = [
     # 🔧 Test endpoint - Para verificar que el backend funciona
     path('test/', views.test_api, name='test-api'),
-    
+
     # 🔐 Authentication endpoints
     path('auth/', include('sportpredict.api.auth.urls')),
-    
-    # ⚽ Matches endpoints (por si los añades después)
+
+    # ⚽ Matches endpoints
     path('matches/', include('sportpredict.api.matches.urls')),
-    
-    # 📊 Analytics endpoints (para el futuro)
+
+    # 📊 Analytics endpoints
     path('analytics/', include('sportpredict.api.analytics.urls')),
     
     # ⚙️ Admin endpoints
@@ -19,10 +19,10 @@ urlpatterns = [
     
     # 🎯 Recommendations endpoints (para el futuro)
     path('recommendations/', include('sportpredict.api.recommendations.urls')),
-    
-    # 👤 Users endpoints (para el futuro)
+
+    # 👤 Users endpoints
     path('users/', include('sportpredict.api.users.urls')),
-    
+
     # 👥 Friends endpoints
     path('friends/', include('sportpredict.api.friends.urls')),
 

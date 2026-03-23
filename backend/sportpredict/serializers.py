@@ -15,11 +15,11 @@ class UsuarioSerializer(serializers.ModelSerializer):
 class UsuarioRegistroSerializer(serializers.ModelSerializer):
     """Serializer para registro de usuario"""
     password = serializers.CharField(write_only=True, min_length=8)
-    
+
     class Meta:
         model = Usuario
         fields = ['email', 'username', 'password', 'first_name', 'last_name']
-    
+
     def create(self, validated_data):
         user = Usuario.objects.create_user(
             username=validated_data['username'],
@@ -43,11 +43,11 @@ class EquipoSerializer(serializers.ModelSerializer):
     deporte = DeporteSerializer(read_only=True)
     deporte_nombre = serializers.CharField(source='deporte.nombre', read_only=True)
     deporte_id = serializers.PrimaryKeyRelatedField(
-        queryset=Deporte.objects.all(), 
-        source='deporte', 
+        queryset=Deporte.objects.all(),
+        source='deporte',
         write_only=True
     )
-    
+
     class Meta:
         model = Equipo
         fields = ['id', 'nombre', 'deporte', 'deporte_nombre', 'deporte_id', 'logo_url', 'codigo']
@@ -56,7 +56,7 @@ class EquipoSerializer(serializers.ModelSerializer):
 class EquipoSimpleSerializer(serializers.ModelSerializer):
     """Serializer simple para Equipo (sin deporte anidado)"""
     deporte_nombre = serializers.CharField(source='deporte.nombre', read_only=True)
-    
+
     class Meta:
         model = Equipo
         fields = ['id', 'nombre', 'codigo', 'logo_url', 'deporte_nombre']
@@ -78,7 +78,7 @@ class PartidoSerializer(serializers.ModelSerializer):
         source='equipo_visitante',
         write_only=True
     )
-    
+
     class Meta:
         model = Partido
         fields = ['id', 'equipo_local', 'equipo_visitante', 'equipo_local_nombre', 
@@ -98,14 +98,14 @@ class PartidoListSerializer(serializers.ModelSerializer):
     equipo_local_nombre = serializers.CharField(source='equipo_local.nombre', read_only=True)
     equipo_visitante_nombre = serializers.CharField(source='equipo_visitante.nombre', read_only=True)
     total_predicciones = serializers.SerializerMethodField()
-    
+
     class Meta:
         model = Partido
-        fields = ['id', 'equipo_local', 'equipo_visitante', 'equipo_local_nombre', 
-                  'equipo_visitante_nombre', 'fecha_hora', 'resultado_final', 
+        fields = ['id', 'equipo_local', 'equipo_visitante', 'equipo_local_nombre',
+                  'equipo_visitante_nombre', 'fecha_hora', 'resultado_final',
                   'estado', 'liga', 'temporada', 'total_predicciones',
                   'goles_local', 'goles_visitante']
-    
+
     def get_total_predicciones(self, obj):
         return obj.prediccion_set.count()
 
@@ -120,7 +120,7 @@ class PrediccionSerializer(serializers.ModelSerializer):
         source='partido',
         write_only=True
     )
-    
+
     class Meta:
         model = Prediccion
         fields = ['id', 'usuario', 'usuario_username', 'partido', 'partido_id', 'prediccion', 
@@ -133,7 +133,7 @@ class PrediccionSerializer(serializers.ModelSerializer):
                   'puntos_resultado', 'puntos_tarjetas', 'puntos_mvp', 'puntos_totales', 'evaluada']
         read_only_fields = ['id', 'usuario', 'puntos_obtenidos', 'fecha_prediccion', 'correcta',
                             'puntos_resultado', 'puntos_tarjetas', 'puntos_mvp', 'puntos_totales', 'evaluada']
-    
+
     def validate_prediccion(self, value):
         """Validar formato de predicción antigua (ej: '2-1')"""
         if not value:
@@ -159,27 +159,26 @@ class PrediccionCreateSerializer(serializers.ModelSerializer):
                   'pred_rojas_local', 'pred_rojas_visitante',
                   'pred_expulsiones_local', 'pred_expulsiones_visitante',
                   'pred_mvp_jugador']
-    
+
     partido_id = serializers.PrimaryKeyRelatedField(
         queryset=Partido.objects.all(),
         source='partido'
     )
     prediccion = serializers.CharField(required=False, allow_blank=True)
-    
+
     def validate(self, data):
         """Validaciones globales y límites"""
-        # Validar límites
-        if data.get('pred_goles_local') is not None and data['pred_goles_local'] > 200: # Cubre baloncesto y fútbol (límite superior)
-             raise serializers.ValidationError({"pred_goles_local": "El valor excede el límite permitido"})
-        
+        if data.get('pred_goles_local') is not None and data['pred_goles_local'] > 200:
+            raise serializers.ValidationError({"pred_goles_local": "El valor excede el límite permitido"})
+
         if data.get('pred_amarillas_local') is not None and data['pred_amarillas_local'] > 16:
-             raise serializers.ValidationError({"pred_amarillas_local": "Máximo 16 tarjetas amarillas permitidas"})
-             
+            raise serializers.ValidationError({"pred_amarillas_local": "Máximo 16 tarjetas amarillas permitidas"})
+
         if data.get('pred_rojas_local') is not None and data['pred_rojas_local'] > 5:
-             raise serializers.ValidationError({"pred_rojas_local": "Máximo 5 tarjetas rojas permitidas"})
-             
+            raise serializers.ValidationError({"pred_rojas_local": "Máximo 5 tarjetas rojas permitidas"})
+
         if data.get('pred_expulsiones_local') is not None and data['pred_expulsiones_local'] > 5:
-             raise serializers.ValidationError({"pred_expulsiones_local": "Máximo 5 expulsiones permitidas"})
+            raise serializers.ValidationError({"pred_expulsiones_local": "Máximo 5 expulsiones permitidas"})
 
         # Al menos una predicción debe existir
         has_legacy = bool(data.get('prediccion'))
@@ -187,10 +186,10 @@ class PrediccionCreateSerializer(serializers.ModelSerializer):
             data.get('pred_goles_local') is not None,
             data.get('pred_mvp_jugador')
         ])
-        
+
         if not has_legacy and not has_advanced:
             raise serializers.ValidationError("Debe realizar al menos una predicción")
-            
+
         return data
 
 

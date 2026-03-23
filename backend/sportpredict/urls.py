@@ -29,6 +29,7 @@ def home_page(request):
         'services': ['PostgreSQL', 'Redis', 'MongoDB', 'Neo4j']
     })
 
+
 def health_check(request):
     return JsonResponse({
         'status': 'healthy',
@@ -36,17 +37,20 @@ def health_check(request):
         'version': '1.0'
     })
 
+
 def services_status(request):
     return JsonResponse({
         'django': 'running',
-        'postgresql': 'configured', 
+        'postgresql': 'configured',
         'redis': 'configured',
         'mongodb': 'configured',
         'neo4j': 'configured'
     })
 
+
 def test_api(request):
     return JsonResponse({'message': '¡Backend Django funcionando correctamente con React!'})
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
