@@ -1,16 +1,12 @@
-from django.contrib.auth.decorators import login_required
-from django.utils import timezone
-from django.db.models import Q, Count, Sum
-from django.http import JsonResponse
 from django.views.decorators.http import require_http_methods
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth.decorators import login_required
 import re
 import json
-import random
 
 from .models import Usuario, Deporte, Equipo, Partido, Prediccion
 from sportpredict.db.redis import session_manager
-
+# from sportpredict.db.mongo_utils import log_prediccion_mongodb  # COMENTADO - No se usa en las nuevas APIs
 
 @require_http_methods(["GET"])
 def inicio(request):
@@ -210,56 +206,6 @@ def detalle_partido(request, partido_id):
         ],
         'puede_predecir': partido.es_predecible() and request.user.is_authenticated,
     })
-
-
-@login_required
-@csrf_exempt
-@require_http_methods(["POST"])
-def hacer_prediccion(request, partido_id):
-    """API: Crear o actualizar predicción (legacy endpoint)"""
-    try:
-        data = json.loads(request.body)
-        prediccion_texto = data.get('prediccion', '').strip()
-
-        partido = Partido.objects.get(id=partido_id)
-
-        if not partido.es_predecible():
-            return JsonResponse({'success': False, 'error': 'No se pueden hacer predicciones para este partido'}, status=400)
-
-        if not session_manager.can_make_prediction(request.user.id):
-            return JsonResponse({
-                'success': False,
-                'error': 'Límite diario alcanzado (10 predicciones máximo)',
-                'limite': 10,
-            }, status=429)
-
-        if not re.match(r'^\d+-\d+$', prediccion_texto):
-            return JsonResponse({'success': False, 'error': 'Formato inválido. Use: 2-1, 0-0, etc.'}, status=400)
-
-        try:
-            prediccion_existente = Prediccion.objects.get(usuario=request.user, partido=partido)
-            prediccion_existente.prediccion = prediccion_texto
-            prediccion_existente.fecha_prediccion = timezone.now()
-            prediccion_existente.save()
-            return JsonResponse({'success': True, 'message': 'Predicción actualizada', 'prediccion_id': prediccion_existente.id})
-        except Prediccion.DoesNotExist:
-            pass
-
-        nueva_prediccion = Prediccion.objects.create(
-            usuario=request.user,
-            partido=partido,
-            prediccion=prediccion_texto
-        )
-        session_manager.increment_predictions(request.user.id)
-
-        return JsonResponse({'success': True, 'message': 'Predicción guardada', 'prediccion_id': nueva_prediccion.id}, status=201)
-
-    except Partido.DoesNotExist:
-        return JsonResponse({'success': False, 'error': 'Partido no encontrado'}, status=404)
-    except json.JSONDecodeError:
-        return JsonResponse({'success': False, 'error': 'JSON inválido'}, status=400)
-    except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
 
 @login_required
@@ -614,59 +560,3 @@ def recomendaciones(request):
         ],
         'mensaje': 'Sistema de recomendaciones en desarrollo (usando Neo4j)',
     })
-
-
-@csrf_exempt
-def trigger_sync(request):
-    """Vista para sincronizar manualmente todos los datos a Neo4j"""
-    from sportpredict.db.neo4j_utils import Neo4jClient
-
-    try:
-        client = Neo4jClient()
-        if not client.verify_connectivity():
-            return JsonResponse({'error': 'No se puede conectar a Neo4j'}, status=500)
-
-        # 1. Sync Users
-        users = Usuario.objects.all()
-        for user in users:
-            client.create_user(user.id, user.username, user.email)
-
-        # 2. Sync Matches
-        matches = Partido.objects.all()
-        for match in matches:
-            client.create_match(
-                match.id,
-                match.equipo_local.nombre,
-                match.equipo_visitante.nombre,
-                match.equipo_local.deporte.nombre,
-                match.fecha_hora
-            )
-
-        # 3. Sync Existing Predictions
-        predictions = Prediccion.objects.all()
-        for pred in predictions:
-            client.create_prediction(pred.usuario.id, pred.partido.id, pred.prediccion)
-
-        # 4. Generar bots de ejemplo si no existen
-        for i in range(1, 6):
-            username = f"bot_expert_{i}"
-            email = f"bot{i}@example.com"
-            user, created = Usuario.objects.get_or_create(
-                username=username,
-                defaults={
-                    'email': email,
-                    'first_name': 'Bot',
-                    'last_name': f'Expert {i}',
-                    'is_active': True,
-                    'puntos_totales': random.randint(100, 500)
-                }
-            )
-            if created:
-                user.set_password('botpass123')
-                user.save()
-            client.create_user(user.id, user.username, user.email)
-
-        client.close()
-        return JsonResponse({'success': True, 'message': 'Sincronización completada correctamente'})
-    except Exception as e:
-        return JsonResponse({'error': str(e)}, status=500)

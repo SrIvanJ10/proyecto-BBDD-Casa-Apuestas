@@ -14,7 +14,7 @@ RUN apk update && apk add --no-cache \
 # Copiar requirements e instalar dependencias Python
 COPY requirements.txt .
 
-# Actualizar pip e instalar wheel
+# Actualizar pip y setuptools, e instalar wheel
 RUN pip install --no-cache-dir --upgrade pip wheel
 
 # Instalar dependencias Python
@@ -29,5 +29,5 @@ RUN echo "Contenido del directorio /app:" && ls -la /app
 # Exponer puerto
 EXPOSE 8000
 
-# Ejecutar migraciones y arrancar el servidor
-CMD ["sh", "-c", "python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:8000"]
+# Comando para depuración antes de ejecutar manage.py
+CMD ["sh", "-c", "python manage.py migrate && python manage.py createsuperuser --noinput || true && python manage.py runserver 0.0.0.0:8000"]

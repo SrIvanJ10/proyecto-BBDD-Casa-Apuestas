@@ -241,6 +241,22 @@ class Prediccion(models.Model):
         self.puntos_obtenidos = self.puntos_totales
         super().save(*args, **kwargs)
 
-    def es_editable(self):
-        from django.utils import timezone
-        return self.partido.estado == 'PENDIENTE' and self.partido.fecha_hora > timezone.now()
+
+class ChatMessage(models.Model):
+    """Mensajes entre usuarios (solo amigos)."""
+
+    sender = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='sent_messages')
+    receiver = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='received_messages')
+    content = models.TextField()
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']
+        indexes = [
+            models.Index(fields=['sender', 'receiver', '-created_at']),
+        ]
+
+    def __str__(self):
+        preview = self.content[:30].replace('\n', ' ')
+        return f"{self.sender.username} -> {self.receiver.username}: {preview}"

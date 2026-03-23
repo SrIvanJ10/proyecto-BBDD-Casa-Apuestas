@@ -13,11 +13,11 @@ urlpatterns = [
 
     # 📊 Analytics endpoints
     path('analytics/', include('sportpredict.api.analytics.urls')),
-
+    
     # ⚙️ Admin endpoints
-    path('admin/', include('sportpredict.api.admin.urls')),
-
-    # 🎯 Recommendations endpoints
+    path('admin/', include('sportpredict.api.admin.urls')),  # Admin panel routes
+    
+    # 🎯 Recommendations endpoints (para el futuro)
     path('recommendations/', include('sportpredict.api.recommendations.urls')),
 
     # 👤 Users endpoints
@@ -26,6 +26,9 @@ urlpatterns = [
     # 👥 Friends endpoints
     path('friends/', include('sportpredict.api.friends.urls')),
 
-    # 🏆 Predictions endpoints
+    # 💬 Chat endpoints
+    path('chat/', include('sportpredict.api.chat.urls')),
+    
+    # 🏆 Predictions endpoints (para el futuro)
     path('predictions/', include('sportpredict.api.predictions.urls')),
 ]

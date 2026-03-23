@@ -5,10 +5,23 @@ from django.shortcuts import render
 from django.conf import settings
 from django.conf.urls.static import static
 
-from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView, SpectacularRedocView
+# Importar las vistas desde views.py
+from . import views  # ← AÑADE ESTA LÍNEA
 
-from . import views
+from django.urls import re_path
+from rest_framework import permissions
+from drf_yasg.views import get_schema_view
+from drf_yasg import openapi
 
+schema_view = get_schema_view(
+   openapi.Info(
+      title="SportPredict API",
+      default_version='v1',
+      description="API documentation for SportPredict",
+   ),
+   public=True,
+   permission_classes=(permissions.AllowAny,),
+)
 
 def home_page(request):
     return render(request, 'home.html', {
@@ -44,18 +57,7 @@ urlpatterns = [
     path('health/', health_check, name='health'),
     path('status/', services_status, name='status'),
     path('', home_page, name='home'),
-    path('api/test/', test_api, name='api_test'),
-
-    # Todas las rutas API delegadas al módulo api/
     path('api/', include('sportpredict.api.urls')),
-
-    # Sync manual de Neo4j
-    path('trigger-sync/', views.trigger_sync, name='trigger_sync'),
-
-    # Documentación Swagger
-    path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
-    path('swagger/', SpectacularSwaggerView.as_view(url_name='schema'), name='swagger-ui'),
-    path('redoc/', SpectacularRedocView.as_view(url_name='schema'), name='redoc'),
 ]
 
 if settings.DEBUG:

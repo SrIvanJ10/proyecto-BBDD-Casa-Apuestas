@@ -75,10 +75,12 @@ def matches_list(request):
                 Q(estado='PENDIENTE', fecha_hora__lt=match_ended_time)
             )
         elif status_filter == 'live':
-            # Partidos en vivo: estado EN_JUEGO o PENDIENTE en ventana de tiempo
+            # Partidos en vivo: desde su hora de inicio hasta 120 minutos después
+            live_end_threshold = now + timedelta(minutes=120)
             queryset = queryset.filter(
-                Q(estado='EN_JUEGO') |
-                Q(estado='PENDIENTE', fecha_hora__lte=now, fecha_hora__gte=now - timedelta(minutes=120))
+                estado='PENDIENTE',
+                fecha_hora__lte=now,  # Ya comenzó
+                fecha_hora__gte=now - timedelta(minutes=120)  # Comenzó hace menos de 120 min
             )
         elif status_filter == 'incoming':
             # Partidos que empiezan en las próximas 24 horas
@@ -316,8 +318,9 @@ def live_matches(request):
         # Query: partidos que están en su ventana de juego (desde inicio hasta 120 min después)
         now = timezone.now()
         queryset = Partido.objects.filter(
-            Q(estado='EN_JUEGO') |
-            Q(estado='PENDIENTE', fecha_hora__lte=now, fecha_hora__gte=now - timedelta(minutes=120))
+            estado='PENDIENTE',
+            fecha_hora__lte=now,  # Ya comenzó
+            fecha_hora__gte=now - timedelta(minutes=120)  # Comenzó hace menos de 120 min
         ).select_related(
             'equipo_local__deporte',
             'equipo_visitante__deporte'

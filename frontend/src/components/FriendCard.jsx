@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const FriendCard = ({ user, onAccept, onReject, onRemove, type = 'friend' }) => {
+const FriendCard = ({ user, onAccept, onReject, onRemove, onChat, type = 'friend' }) => {
     return (
         <div className="friend-card">
             <div className="friend-info">
@@ -44,13 +44,24 @@ const FriendCard = ({ user, onAccept, onReject, onRemove, type = 'friend' }) => 
                 )}
 
                 {type === 'friend' && (
-                    <button
-                        className="btn-remove"
-                        onClick={() => onRemove(user.id)}
-                        title="Eliminar amigo"
-                    >
-                        🗑️ Eliminar
-                    </button>
+                    <>
+                        {onChat && (
+                            <button
+                                className="btn-accept"
+                                onClick={() => onChat(user.id)}
+                                title="Abrir chat"
+                            >
+                                💬 Chat
+                            </button>
+                        )}
+                        <button
+                            className="btn-remove"
+                            onClick={() => onRemove(user.id)}
+                            title="Eliminar amigo"
+                        >
+                            🗑️ Eliminar
+                        </button>
+                    </>
                 )}
             </div>
         </div>
@@ -68,6 +79,7 @@ FriendCard.propTypes = {
     onAccept: PropTypes.func,
     onReject: PropTypes.func,
     onRemove: PropTypes.func,
+    onChat: PropTypes.func,
     type: PropTypes.oneOf(['friend', 'pending']),
 };
 

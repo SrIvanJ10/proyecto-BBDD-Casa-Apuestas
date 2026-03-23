@@ -1,12 +1,12 @@
 from rest_framework import serializers
-from .models import Usuario, Deporte, Equipo, Partido, Prediccion
+from .models import Usuario, Deporte, Equipo, Partido, Prediccion, ChatMessage
 
 
 class UsuarioSerializer(serializers.ModelSerializer):
     """Serializer para el modelo Usuario"""
     class Meta:
         model = Usuario
-        fields = ['id', 'username', 'email', 'first_name', 'last_name',
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 
                   'puntos_totales', 'nivel_experto', 'fecha_registro', 'avatar',
                   'tipo_suscripcion', 'is_staff', 'is_superuser']
         read_only_fields = ['id', 'fecha_registro', 'puntos_totales', 'nivel_experto']
@@ -81,9 +81,9 @@ class PartidoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Partido
-        fields = ['id', 'equipo_local', 'equipo_visitante', 'equipo_local_nombre',
-                  'equipo_visitante_nombre', 'equipo_local_id',
-                  'equipo_visitante_id', 'fecha_hora', 'resultado_final',
+        fields = ['id', 'equipo_local', 'equipo_visitante', 'equipo_local_nombre', 
+                  'equipo_visitante_nombre', 'equipo_local_id', 
+                  'equipo_visitante_id', 'fecha_hora', 'resultado_final', 
                   'estado', 'liga', 'temporada',
                   'goles_local', 'goles_visitante',
                   'amarillas_local', 'amarillas_visitante', 'rojas_local', 'rojas_visitante',
@@ -123,7 +123,7 @@ class PrediccionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Prediccion
-        fields = ['id', 'usuario', 'usuario_username', 'partido', 'partido_id', 'prediccion',
+        fields = ['id', 'usuario', 'usuario_username', 'partido', 'partido_id', 'prediccion', 
                   'puntos_obtenidos', 'fecha_prediccion', 'correcta',
                   'pred_goles_local', 'pred_goles_visitante',
                   'pred_amarillas_local', 'pred_amarillas_visitante',
@@ -191,3 +191,15 @@ class PrediccionCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Debe realizar al menos una predicción")
 
         return data
+
+
+class ChatMessageSerializer(serializers.ModelSerializer):
+    """Serializer para mensajes de chat."""
+
+    sender = UsuarioSerializer(read_only=True)
+    receiver = UsuarioSerializer(read_only=True)
+
+    class Meta:
+        model = ChatMessage
+        fields = ['id', 'sender', 'receiver', 'content', 'is_read', 'created_at']
+        read_only_fields = ['id', 'sender', 'receiver', 'is_read', 'created_at']

@@ -12,6 +12,7 @@ import Profile from './pages/Profile'
 import Recommendations from './pages/Recommendations'
 import Friends from './pages/Friends'
 import Admin from './pages/Admin'
+import Chat from './pages/Chat'
 import './App.css'
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/recommendations" element={<Recommendations />} />
             <Route path="/friends" element={<Friends />} />
+            <Route path="/chat" element={<Chat />} />
             <Route path="/admin" element={<Admin />} />
           </Routes>
           <Footer />
