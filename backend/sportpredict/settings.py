@@ -17,6 +17,7 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # Application definition
 INSTALLED_APPS = [
+    'daphne',  # Debe ir primero para reemplazar runserver con ASGI
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -25,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'corsheaders',
+    'channels',
     'sportpredict',
     'drf_yasg',
 ]
@@ -60,6 +62,17 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'sportpredict.wsgi.application'
+ASGI_APPLICATION = 'sportpredict.asgi.application'
+
+# Django Channels - usa Redis como channel layer para WebSockets
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            'hosts': [(os.environ.get('REDIS_HOST', 'redis'), 6379)],
+        },
+    },
+}
 
 # Database
 DATABASES = {

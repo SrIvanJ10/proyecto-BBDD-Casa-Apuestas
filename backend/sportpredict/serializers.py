@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Usuario, Deporte, Equipo, Partido, Prediccion
+from .models import Usuario, Deporte, Equipo, Partido, Prediccion, ChatMessage
 
 
 class UsuarioSerializer(serializers.ModelSerializer):
@@ -192,3 +192,15 @@ class PrediccionCreateSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Debe realizar al menos una predicción")
             
         return data
+
+
+class ChatMessageSerializer(serializers.ModelSerializer):
+    """Serializer para mensajes de chat."""
+
+    sender = UsuarioSerializer(read_only=True)
+    receiver = UsuarioSerializer(read_only=True)
+
+    class Meta:
+        model = ChatMessage
+        fields = ['id', 'sender', 'receiver', 'content', 'is_read', 'created_at']
+        read_only_fields = ['id', 'sender', 'receiver', 'is_read', 'created_at']

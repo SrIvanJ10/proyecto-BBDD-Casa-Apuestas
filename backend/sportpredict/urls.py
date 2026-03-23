@@ -53,6 +53,7 @@ urlpatterns = [
     path('health/', health_check, name='health'),
     path('status/', services_status, name='status'),
     path('', home_page, name='home'),
+    path('api/', include('sportpredict.api.urls')),
 ]
 
 if settings.DEBUG:

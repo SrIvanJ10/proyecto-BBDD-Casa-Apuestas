@@ -22,6 +22,7 @@ const Navbar = () => {
           <Link to="/">Inicio</Link>
           <Link to="/matches">Partidos</Link>
           <Link to="/leaderboard">Ranking</Link>
+          {user && <Link to="/chat">Chat</Link>}
           {user && <Link to="/recommendations">Recomendaciones</Link>}
           {user && <Link to="/friends">Amigos</Link>}
           {user && user.is_staff && <Link to="/admin" style={{ color: '#f59e0b', fontWeight: 'bold' }}>⚙️ Admin</Link>}

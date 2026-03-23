@@ -25,6 +25,9 @@ urlpatterns = [
     
     # 👥 Friends endpoints
     path('friends/', include('sportpredict.api.friends.urls')),
+
+    # 💬 Chat endpoints
+    path('chat/', include('sportpredict.api.chat.urls')),
     
     # 🏆 Predictions endpoints (para el futuro)
     path('predictions/', include('sportpredict.api.predictions.urls')),

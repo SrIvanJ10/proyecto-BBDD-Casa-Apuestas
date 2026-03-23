@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import FriendCard from '../components/FriendCard';
 import UserSearchCard from '../components/UserSearchCard';
@@ -14,6 +15,7 @@ import './Friends.css';
 
 const Friends = () => {
     const { user } = useAuth();
+    const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState('all');
     const [friends, setFriends] = useState([]);
     const [pendingRequests, setPendingRequests] = useState([]);
@@ -125,6 +127,10 @@ const Friends = () => {
         }
     };
 
+    const handleOpenChat = (userId) => {
+        navigate(`/chat?with=${userId}`);
+    };
+
     const handleRequestSent = () => {
         setSuccessMessage('Solicitud de amistad enviada');
         setTimeout(() => setSuccessMessage(null), 3000);
@@ -150,6 +156,7 @@ const Friends = () => {
                                         key={friend.id}
                                         user={friend}
                                         type="friend"
+                                        onChat={handleOpenChat}
                                         onRemove={handleRemoveFriend}
                                     />
                                 ))}
