@@ -1,4 +1,4 @@
-# SportPredict 🏆
+# Sport365 🏆
 
 Plataforma de predicciones deportivas con sistema social entre usuarios. Permite predecir resultados de partidos de fútbol y baloncesto, acumular puntos, seguir a amigos y chatear con ellos en tiempo real.
 
